@@ -9,7 +9,7 @@ class TransactionModel extends Model
 {
     protected $table = 't_transaction';
     protected $primaryKey = 'id';
-
+    protected $db;
 
     protected $allowedFields = [
         'id_client_source',
@@ -20,27 +20,27 @@ class TransactionModel extends Model
         'frais'
     ];
 
-
     protected ClientModel $clientModel;
     protected TypeOperationModel $typeOperationModel;
     protected TarifOperationModel $tarifModel;
 
-
     public function __construct()
     {
+        parent::__construct();
+        $this->db = \Config\Database::connect();
         $this->clientModel = new ClientModel();
-
         $this->typeOperationModel = new TypeOperationModel();
         $this->tarifModel = new TarifOperationModel();
     }
 
-
+    /**
+     * Effectue un retrait pour un client
+     */
     public function retirer(
         int $id_client,
         float $montant,
         ?string $date = null
     ) {
-
         $date = $date ?? date('Y-m-d H:i:s');
 
         $client = $this->clientModel->find($id_client);
@@ -49,7 +49,7 @@ class TransactionModel extends Model
             throw new Exception("Client introuvable.");
         }
 
-        $solde = $this->clientModel->getSolde($id_client);
+        $solde = $this->getSolde($id_client);
 
         if ($solde < $montant) {
             throw new Exception("Solde insuffisant.");
@@ -69,7 +69,6 @@ class TransactionModel extends Model
             $montant
         );
 
-
         $this->clientModel->update(
             $id_client,
             [
@@ -77,7 +76,7 @@ class TransactionModel extends Model
             ]
         );
 
-        return $this->transactionModel->insert([
+        return $this->insert([
             'id_client_source'  => $id_client,
             'id_client_cible'   => null,
             'id_type_operation' => $operation['id'],
@@ -87,14 +86,15 @@ class TransactionModel extends Model
         ]);
     }
 
+    /**
+     * Effectue un dépôt pour un client
+     */
     public function deposer(
         int $id_client,
         float $montant,
         ?string $date = null
     ) {
-
         $date = $date ?? date('Y-m-d H:i:s');
-
 
         $client = $this->clientModel->find($id_client);
 
@@ -102,18 +102,15 @@ class TransactionModel extends Model
             throw new Exception("Client introuvable.");
         }
 
-        $solde = $this->clientModel->getSolde($id_client);
-
+        $solde = $this->getSolde($id_client);
 
         $operation = $this->typeOperationModel
             ->where('code', 'DEPOT')
             ->first();
 
-
         if (!$operation) {
             throw new Exception("Type opération DEPOT introuvable.");
         }
-
 
         // Vérification seuil
         $this->checkSeuil(
@@ -129,7 +126,7 @@ class TransactionModel extends Model
             ]
         );
 
-        return $this->transactionModel->insert([
+        return $this->insert([
             'id_client_source'  => $id_client,
             'id_client_cible'   => null,
             'id_type_operation' => $operation['id'],
@@ -139,13 +136,15 @@ class TransactionModel extends Model
         ]);
     }
 
+    /**
+     * Effectue un transfert entre deux clients
+     */
     public function transferer(
         int $id_client_source,
         int $id_client_cible,
         float $montant,
         ?string $date = null
     ) {
-
         $date = $date ?? date('Y-m-d H:i:s');
 
         $source = $this->clientModel->find($id_client_source);
@@ -155,7 +154,7 @@ class TransactionModel extends Model
             throw new Exception("Client introuvable.");
         }
 
-        $soldeSource = $this->clientModel->getSolde($id_client_source);
+        $soldeSource = $this->getSolde($id_client_source);
 
         if ($soldeSource < $montant) {
             throw new Exception("Solde insuffisant.");
@@ -175,8 +174,7 @@ class TransactionModel extends Model
             $montant
         );
 
-
-        $soldeCible = $this->clientModel->getSolde($id_client_cible);
+        $soldeCible = $this->getSolde($id_client_cible);
 
         $this->clientModel->update(
             $id_client_source,
@@ -190,7 +188,8 @@ class TransactionModel extends Model
                 'solde' => $soldeCible + $montant
             ]
         );
-        return $this->transactionModel->insert([
+
+        return $this->insert([
             'id_client_source'  => $id_client_source,
             'id_client_cible'   => $id_client_cible,
             'id_type_operation' => $operation['id'],
@@ -200,42 +199,9 @@ class TransactionModel extends Model
         ]);
     }
 
-
-
-
-
-    private function checkSeuil(
-        int $idOperateur,
-        int $idTypeOperation,
-        float $montant
-    ) {
-        $tarif = $this->tarifModel->getTarif(
-            $idOperateur,
-            $idTypeOperation,
-            $montant
-        );
-        if (!$tarif) {
-
-            throw new Exception(
-                "Montant hors limite autorisée."
-            );
-        }
-
-
-        return true;
-    }
-}
-
-class TransactionModel extends Model
-{
-    protected $db;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->db = \Config\Database::connect();
-    }
-
+    /**
+     * Récupère le solde d'un client à une date donnée
+     */
     public function getSolde($id_client, $date = null)
     {
         if ($date === null) {
@@ -248,6 +214,7 @@ class TransactionModel extends Model
             }
         }
 
+        // Calcul des transactions en tant que source
         $builderSource = $this->db->table('t_transaction t');
         $builderSource->select("SUM(CASE 
             WHEN toper.code = 'DEPOT' THEN t.montant
@@ -258,8 +225,9 @@ class TransactionModel extends Model
         $builderSource->where('t.id_client_source', $id_client);
         $builderSource->where('t.date <=', $date);
         $querySource = $builderSource->get();
-        $totalSource = (float) $querySource->getRow()->total_source ?? 0;
+        $totalSource = (float) ($querySource->getRow()->total_source ?? 0);
 
+        // Calcul des transferts reçus (en tant que cible)
         $builderCible = $this->db->table('t_transaction t');
         $builderCible->select('SUM(t.montant) as total_cible');
         $builderCible->join('t_type_operation toper', 'toper.id = t.id_type_operation');
@@ -267,11 +235,14 @@ class TransactionModel extends Model
         $builderCible->where('toper.code', 'TRANSFERT');
         $builderCible->where('t.date <=', $date);
         $queryCible = $builderCible->get();
-        $totalCible = (float) $queryCible->getRow()->total_cible ?? 0;
+        $totalCible = (float) ($queryCible->getRow()->total_cible ?? 0);
 
         return $totalSource + $totalCible;
     }
 
+    /**
+     * Récupère toutes les transactions d'un client avec pagination et filtres
+     */
     public function getAllTransaction($id_client, $perPage = 10, $page = 1, $filters = [])
     {
         $builder = $this->db->table('t_transaction t');
@@ -294,6 +265,7 @@ class TransactionModel extends Model
 
         $builder->where('(t.id_client_source = ' . $this->db->escape($id_client) . ' OR t.id_client_cible = ' . $this->db->escape($id_client) . ')');
 
+        // Filtres optionnels
         if (!empty($filters['type'])) {
             $builder->where('t.id_type_operation', $filters['type']);
         }
@@ -306,6 +278,7 @@ class TransactionModel extends Model
 
         $builder->orderBy('t.date', 'DESC');
 
+        // Récupère le total avant la pagination
         $total = $builder->countAllResults(false);
         $builder->limit($perPage, ($page - 1) * $perPage);
 
@@ -319,5 +292,28 @@ class TransactionModel extends Model
             'pager' => $pager,
             'total' => $total
         ];
+    }
+
+    /**
+     * Vérifie si le montant respecte les seuils autorisés
+     */
+    private function checkSeuil(
+        int $idOperateur,
+        int $idTypeOperation,
+        float $montant
+    ) {
+        $tarif = $this->tarifModel->getTarif(
+            $idOperateur,
+            $idTypeOperation,
+            $montant
+        );
+        
+        if (!$tarif) {
+            throw new Exception(
+                "Montant hors limite autorisée."
+            );
+        }
+
+        return true;
     }
 }
