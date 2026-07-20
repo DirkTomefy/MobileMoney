@@ -18,7 +18,7 @@ class Database extends Config
         'hostname'    => 'localhost',
         'username'    => '',
         'password'    => '',
-        'database'    => WRITEPATH . 'db' . DIRECTORY_SEPARATOR . 'util.db',
+        'database'    => WRITEPATH . 'db' . DIRECTORY_SEPARATOR . 'mobile_money.db',
         'DBDriver'    => 'SQLite3',
         'DBPrefix'    => '',
         'pConnect'    => false,
