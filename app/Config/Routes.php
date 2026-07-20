@@ -5,21 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Articles::index');
 
-// Authentification
-$routes->get('register', 'Auth::register');
-$routes->post('register', 'Auth::register');
-$routes->get('login', 'Auth::login');
-$routes->post('login', 'Auth::login');
-$routes->get('logout', 'Auth::logout');
+$routes->get('/', 'HomeController::index');
 
-// Articles
-$routes->get('articles', 'Articles::index');
-$routes->get('articles/create', 'Articles::create');
-$routes->post('articles/store', 'Articles::store');
-$routes->get('articles/delete/(:num)', 'Articles::delete/$1');
+// Traitement du bouton "Se connecter"
+$routes->post('home/connect', 'HomeController::connect');
 
-// Administration
-$routes->get('admin', 'Admin::dashboard');
-$routes->get('admin/delete/(:num)', 'Admin::deleteUser/$1');
+// Page après connexion
+$routes->get('client/home', 'ClientController::home');
