@@ -1,4 +1,4 @@
-# Table (Tomefyss)
+# Table (Tomefy)
 
 -t_operateur
     -id
@@ -48,7 +48,7 @@
 
 ## Front-ofice
 
--[] Login.php
+-[][Tsimbina] Login.php 
     -[] page html+ css
     -[] fonction 
         -[] isSigned
@@ -56,7 +56,7 @@
         -[] signUp
     -[] integration (avec session)
 
--[] Solde.php
+-[][Tomefy] Solde.php
     -[] page html+ css
         -bouton action( retrait, depot ,transfert)
     -[] fonction
@@ -68,7 +68,7 @@
         -[]solde
         -[] bouton avec redirection (id_type_transaction)
 
--[] Transaction.php
+-[][Tsimbina] Transaction.php
     -[] page html+ css
         -[] miovaova par rapport type_transaction
     -[] fonction
@@ -80,7 +80,7 @@
 
 
 ## Back-office
--[] DashBoard.php
+-[][Tomefy] DashBoard.php
     -[] page html +css
         -[] formulaire (date debut et fin)
         -[] situation global
@@ -93,14 +93,14 @@
         -[] situation global
         -[] liste gain (+ graphe si possible)
 
--[] Portefeuille.php
+-[][Tsimbina] Portefeuille.php
     -[] page html +css
         -[] input date
         -[] liste portefeuille
     -[] fonction
         -[] getAllPortefeuille($date)
 
--[] Tarif.php
+-[][Tomefy] Tarif.php
     -[] page html+css
         -[] onglet type_transaction(retrait , transfert)
         -[] liste tarif
