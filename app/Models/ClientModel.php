@@ -41,9 +41,12 @@ class ClientModel extends Model
         $db = \Config\Database::connect();
 
 
-        $sql = "
+        /*
+     * Transactions où le client est source
+     */
+        $sqlSource = "
         SELECT 
-            SUM(
+            COALESCE(SUM(
                 CASE
 
                     WHEN op.code = 'DEPOT'
@@ -51,17 +54,17 @@ class ClientModel extends Model
 
 
                     WHEN op.code = 'RETRAIT'
-                    THEN -t.montant
+                    THEN -(t.montant + t.frais)
 
 
                     WHEN op.code = 'TRANSFERT'
-                    THEN -t.montant
+                    THEN -(t.montant + t.frais + t.commission)
 
 
                     ELSE 0
 
                 END
-            ) AS solde
+            ),0) AS solde
 
         FROM t_transaction t
 
@@ -72,15 +75,48 @@ class ClientModel extends Model
     ";
 
 
-        $query = $db->query(
-            $sql,
+        $querySource = $db->query(
+            $sqlSource,
             [$id_client]
         );
 
 
-        $result = $query->getRowArray();
+        $soldeSource = (float)
+        $querySource->getRowArray()['solde'];
 
 
-        return (float)($result['solde'] ?? 0);
+
+        /*
+     * Transferts reçus par le client
+     */
+        $sqlCible = "
+        SELECT 
+            COALESCE(SUM(t.montant),0) AS solde
+
+        FROM t_transaction t
+
+        JOIN t_type_operation op
+        ON op.id = t.id_type_operation
+
+        WHERE t.id_client_cible = ?
+
+        AND op.code = 'TRANSFERT'
+    ";
+
+
+        $queryCible = $db->query(
+            $sqlCible,
+            [$id_client]
+        );
+
+
+        $soldeCible = (float)
+        $queryCible->getRowArray()['solde'];
+
+
+
+        return $soldeSource + $soldeCible;
     }
+    
+
 }

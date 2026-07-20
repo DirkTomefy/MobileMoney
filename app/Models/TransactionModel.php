@@ -17,7 +17,8 @@ class TransactionModel extends Model
         'id_type_operation',
         'date',
         'montant',
-        'frais'
+        'frais',
+        'commission'
     ];
 
     protected ClientModel $clientModel;
@@ -118,64 +119,57 @@ class TransactionModel extends Model
     /**
      * Effectue un dépôt pour un client
      */
-    public function transferer(
-        int $id_client_source,
-        int $id_client_cible,
-        float $montant,
-        ?string $date = null
-    ) {
-        $date = $date ?? date('Y-m-d H:i:s');
+   public function transferer(
+    int $id_client_source,
+    int $id_client_cible,
+    float $montant,
+    ?string $date = null,
+    bool $addFees = true
+) {
+    $date = $date ?? date('Y-m-d H:i:s');
 
-        $source = $this->clientModel->find($id_client_source);
-        $cible  = $this->clientModel->find($id_client_cible);
+    $source = $this->clientModel->find($id_client_source);
+    $cible  = $this->clientModel->find($id_client_cible);
 
-        if (!$source) {
-            throw new Exception("Client source introuvable.");
-        }
+    if (!$source) throw new Exception("Client source introuvable.");
+    if (!$cible)  throw new Exception("Client destinataire introuvable.");
 
-        if (!$cible) {
-            throw new Exception("Client destinataire introuvable.");
-        }
+    // Type TRANSFERT
+    $operation = $this->typeOperationModel->where('code', 'TRANSFERT')->first();
+    if (!$operation) throw new Exception("Type opération TRANSFERT introuvable.");
 
-        $solde = $this->getSolde($id_client_source);
+    // Tarif
+    $tarif = $this->tarifModel->getTarif($source['id_operateur'], $operation['id'], $montant);
+    if (!$tarif) throw new Exception("Tarif transfert introuvable.");
+    $frais = (float)$tarif['prix'];
 
-        if ($solde < $montant) {
-            throw new Exception("Solde insuffisant.");
-        }
+    // Commission (0 si même opérateur ou non définie)
+    $commissionModel = new CommissionModel();
+    $commissionData = $commissionModel->getCommission($source['id_operateur'], $cible['id_operateur']);
+    $commission = $commissionData ? ($montant * $commissionData['pourcentage'] / 100) : 0;
 
-        $operation = $this->typeOperationModel
-            ->where('code', 'TRANSFERT')
-            ->first();
+    // Calcul du total à débiter selon l'option
+    $totalDebit = $addFees ? ($montant + $frais + $commission) : $montant;
 
-        if (!$operation) {
-            throw new Exception("Type opération TRANSFERT introuvable.");
-        }
-
-        $this->checkSeuil(
-            $source['id_operateur'],
-            $operation['id'],
-            $montant
-        );
-
-        // Enregistrer le transfert (débit du client source)
-        $this->insert([
-            'id_client_source'  => $id_client_source,
-            'id_client_cible'   => $id_client_cible,
-            'id_type_operation' => $operation['id'],
-            'date'              => $date,
-            'montant'           => $montant,
-            'frais'             => 0
-        ]);
-
-        // Créditer le destinataire avec un dépôt
-        $this->deposer(
-            $id_client_cible,
-            $montant,
-            $date
-        );
-
-        return true;
+    // Vérifier le solde
+    $solde = $this->getSolde($id_client_source);
+    if ($solde < $totalDebit) {
+        throw new Exception("Solde insuffisant pour couvrir le montant et les frais.");
     }
+
+    // Enregistrement
+    return $this->insert([
+        'id_client_source'  => $id_client_source,
+        'id_client_cible'   => $id_client_cible,
+        'id_type_operation' => $operation['id'],
+        'date'              => $date,
+        'montant'           => $montant,
+        'frais'             => $frais,
+        'commission'        => $commission,
+    ]);
+}
+
+
     /**
      * Récupère le solde d'un client à une date donnée
      */
@@ -185,41 +179,94 @@ class TransactionModel extends Model
             $date = date('Y-m-d H:i:s');
         } else {
             $dt = \DateTime::createFromFormat('Y-m-d', $date);
+
             if ($dt) {
                 $dt->setTime(23, 59, 59);
                 $date = $dt->format('Y-m-d H:i:s');
             }
         }
 
-        // Calcul des transactions en tant que source
-        $builderSource = $this->db->table('t_transaction t');
-        $builderSource->select("SUM(CASE 
-            WHEN toper.code = 'DEPOT' THEN t.montant
-            WHEN toper.code IN ('RETRAIT', 'TRANSFERT') THEN - (t.montant + t.frais)
-            ELSE 0
-        END) as total_source");
-        $builderSource->join('t_type_operation toper', 'toper.id = t.id_type_operation');
-        $builderSource->where('t.id_client_source', $id_client);
-        $builderSource->where('t.date <=', $date);
-        $querySource = $builderSource->get();
-        $totalSource = (float) ($querySource->getRow()->total_source ?? 0);
 
-        // Calcul des transferts reçus (en tant que cible)
+        // Client en tant que source
+        $builderSource = $this->db->table('t_transaction t');
+
+        $builderSource->select("
+        COALESCE(SUM(
+            CASE
+
+                WHEN toper.code = 'DEPOT'
+                    THEN t.montant
+
+                WHEN toper.code = 'RETRAIT'
+                    THEN -(t.montant + t.frais)
+
+                WHEN toper.code = 'TRANSFERT'
+                    THEN -(t.montant + t.frais + t.commission)
+
+                ELSE 0
+
+            END
+        ),0) AS total_source
+    ");
+
+        $builderSource->join(
+            't_type_operation toper',
+            'toper.id = t.id_type_operation'
+        );
+
+        $builderSource->where(
+            't.id_client_source',
+            $id_client
+        );
+
+        $builderSource->where(
+            't.date <=',
+            $date
+        );
+
+
+        $querySource = $builderSource->get();
+
+        $totalSource = (float)
+        $querySource->getRow()->total_source;
+
+
+        // Client en tant que destinataire d'un transfert
         $builderCible = $this->db->table('t_transaction t');
-        $builderCible->select('SUM(t.montant) as total_cible');
-        $builderCible->join('t_type_operation toper', 'toper.id = t.id_type_operation');
-        $builderCible->where('t.id_client_cible', $id_client);
-        $builderCible->where('toper.code', 'TRANSFERT');
-        $builderCible->where('t.date <=', $date);
+
+        $builderCible->select("
+        COALESCE(SUM(t.montant),0) AS total_cible
+    ");
+
+        $builderCible->join(
+            't_type_operation toper',
+            'toper.id = t.id_type_operation'
+        );
+
+        $builderCible->where(
+            't.id_client_cible',
+            $id_client
+        );
+
+        $builderCible->where(
+            'toper.code',
+            'TRANSFERT'
+        );
+
+        $builderCible->where(
+            't.date <=',
+            $date
+        );
+
         $queryCible = $builderCible->get();
-        $totalCible = (float) ($queryCible->getRow()->total_cible ?? 0);
+
+        $totalCible = (float)
+        $queryCible->getRow()->total_cible;
 
         return $totalSource + $totalCible;
     }
 
-    /**
-     * Récupère toutes les transactions d'un client avec pagination et filtres
-     */
+
     public function getAllTransaction($id_client, $perPage = 10, $page = 1, $filters = [])
     {
         $builder = $this->db->table('t_transaction t');
@@ -292,5 +339,37 @@ class TransactionModel extends Model
         }
 
         return true;
+    }
+    public function getFraisRetrait(
+        int $id_operateur,
+        float $montant
+    ): float {
+        // Récupération du type RETRAIT
+        $operation = $this->typeOperationModel
+            ->where('code', 'RETRAIT')
+            ->first();
+
+
+        if (!$operation) {
+            throw new Exception("Type opération RETRAIT introuvable.");
+        }
+
+
+        // Recherche du tarif correspondant
+        $tarif = $this->tarifOperationModel
+            ->where('id_operateur', $id_operateur)
+            ->where('id_type_operation', $operation['id'])
+            ->where('min <=', $montant)
+            ->where('max >=', $montant)
+            ->first();
+
+
+        if (!$tarif) {
+            throw new Exception(
+                "Aucun tarif retrait trouvé pour cet opérateur."
+            );
+        }
+
+        return (float)$tarif['prix'];
     }
 }
