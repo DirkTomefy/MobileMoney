@@ -94,11 +94,11 @@
         -[x] liste gain (+ graphe si possible)
 
 -[][Tsimbina] Portefeuille.php
-    -[] page html +css
-        -[] input date
-        -[] liste portefeuille
-    -[] fonction
-        -[] getAllPortefeuille($date)
+    -[x] page html +css
+        -[x] input date
+        -[x] liste portefeuille
+    -[x] fonction
+        -[x] getAllPortefeuille($date)
 
 -[][Tomefy] Tarif.php
     -[x] page html+css
