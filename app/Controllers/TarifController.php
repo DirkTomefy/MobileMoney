@@ -13,9 +13,7 @@ class TarifController extends BaseController
     public function __construct()
     {
         $this->operateurModel = new OperateurModel();
-        // Récupérer l'opérateur depuis la session, avec fallback à 1
-        $session = session();
-        $this->operateurId = $session->get('operateur_id') ?? 1;
+        $this->operateurId = session()->get('operateur_id') ?? 1;
     }
 
     public function index()

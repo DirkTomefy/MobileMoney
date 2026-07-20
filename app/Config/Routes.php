@@ -6,6 +6,8 @@ use App\Controllers\TarifController;
 
 
 $routes->get('backoffice/dashboard', 'DashboardController::index');
-$routes->get('backoffice/tarif', [TarifController::class, 'index']);
-$routes->get('backoffice/tarif/getTarifs', [TarifController::class, 'getTarifs']);
-$routes->post('backoffice/tarif/update', [TarifController::class, 'update']);
+
+
+$routes->get('backoffice/tarif', 'TarifController::index');
+$routes->get('backoffice/tarif/getTarifs', 'TarifController::getTarifs');
+$routes->post('backoffice/tarif/update', 'TarifController::update');
