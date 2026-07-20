@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de bord — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-word">Meridian<small>Suite Patrimoniale</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Général</div>
+      <a href="dashboard.html" class="nav-link active"><i class="bi bi-grid-1x2"></i> Tableau de bord</a>
+      <a href="tableau.html" class="nav-link"><i class="bi bi-table"></i> Portefeuille clients</a>
+      <a href="formulaire.html" class="nav-link"><i class="bi bi-ui-checks"></i> Nouveau dossier</a>
+
+      <div class="nav-section-label">Analyse</div>
+      <a href="#" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Performance</a>
+      <a href="#" class="nav-link"><i class="bi bi-pie-chart"></i> Répartition</a>
+      <a href="#" class="nav-link"><i class="bi bi-file-earmark-text"></i> Rapports</a>
+
+      <div class="nav-section-label">Compte</div>
+      <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
+      <a href="login.html" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+    </nav>
+    <div class="sidebar-foot">
+      © 2026 Meridian Suite — v2.4
+    </div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-accent d-lg-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
+        <div class="search-box d-none d-md-block">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Rechercher un client, un dossier…">
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-accent position-relative">
+          <i class="bi bi-bell"></i>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill" style="background:var(--color-accent); width:8px; height:8px; padding:0;"></span>
+        </button>
+        <div class="vr d-none d-sm-block"></div>
+        <div class="d-flex align-items-center gap-2">
+          <div class="avatar-sm">CL</div>
+          <div class="d-none d-sm-block">
+            <div class="fw-semibold small">Claire Lambert</div>
+            <div class="text-faint" style="font-size:.72rem;">Gestionnaire senior</div>
+          </div>
+          <i class="bi bi-chevron-down text-faint small"></i>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
+        <div>
+          <div class="eyebrow mb-1">Vue d'ensemble</div>
+          <h1 class="h3 font-display mb-0">Bonjour, Claire</h1>
+          <p class="text-muted-soft mb-0">Voici la synthèse de votre activité — lundi 20 juillet 2026.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-accent"><i class="bi bi-download me-1"></i> Exporter</button>
+          <button class="btn btn-accent"><i class="bi bi-plus-lg me-1"></i> Nouveau dossier</button>
+        </div>
+      </div>
+
+      <!-- KPI Row -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+          <div class="card-chic stat-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="stat-icon"><i class="bi bi-wallet2"></i></div>
+              <span class="stat-delta up"><i class="bi bi-arrow-up-right"></i> 4.8%</span>
+            </div>
+            <div class="stat-value">€48.2M</div>
+            <div class="text-muted-soft small mt-1">Actifs sous gestion</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="card-chic stat-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="stat-icon"><i class="bi bi-people"></i></div>
+              <span class="stat-delta up"><i class="bi bi-arrow-up-right"></i> 2.1%</span>
+            </div>
+            <div class="stat-value">1 284</div>
+            <div class="text-muted-soft small mt-1">Clients actifs</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="card-chic stat-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="stat-icon"><i class="bi bi-graph-up"></i></div>
+              <span class="stat-delta up"><i class="bi bi-arrow-up-right"></i> 1.4%</span>
+            </div>
+            <div class="stat-value">12.6%</div>
+            <div class="text-muted-soft small mt-1">Rendement annuel</div>
+          </div>
+        </div>
+        <div class="col-6 col-xl-3">
+          <div class="card-chic stat-card h-100">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div class="stat-icon"><i class="bi bi-exclamation-triangle"></i></div>
+              <span class="stat-delta down"><i class="bi bi-arrow-down-right"></i> 0.6%</span>
+            </div>
+            <div class="stat-value">3.2%</div>
+            <div class="text-muted-soft small mt-1">Taux d'attrition</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="row g-3 mb-4">
+        <div class="col-lg-8">
+          <div class="card-chic h-100">
+            <div class="card-header-chic">
+              <div>
+                <div class="fw-semibold">Évolution du portefeuille</div>
+                <div class="text-faint small">Actifs sous gestion — 12 derniers mois</div>
+              </div>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-accent active">1A</button>
+                <button class="btn btn-outline-accent">3A</button>
+                <button class="btn btn-outline-accent">5A</button>
+              </div>
+            </div>
+            <div class="card-body-chic">
+              <canvas id="chartPortfolio" height="130"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card-chic h-100">
+            <div class="card-header-chic">
+              <div>
+                <div class="fw-semibold">Répartition des actifs</div>
+                <div class="text-faint small">Par classe</div>
+              </div>
+            </div>
+            <div class="card-body-chic d-flex flex-column align-items-center">
+              <canvas id="chartAllocation" height="200"></canvas>
+              <div class="w-100 mt-3">
+                <div class="d-flex justify-content-between small mb-2">
+                  <span><i class="bi bi-square-fill me-1" style="color:#12141C;"></i>Actions</span><span class="fw-semibold">42%</span>
+                </div>
+                <div class="d-flex justify-content-between small mb-2">
+                  <span><i class="bi bi-square-fill me-1" style="color:#A9814B;"></i>Obligations</span><span class="fw-semibold">31%</span>
+                </div>
+                <div class="d-flex justify-content-between small mb-2">
+                  <span><i class="bi bi-square-fill me-1" style="color:#45607C;"></i>Immobilier</span><span class="fw-semibold">18%</span>
+                </div>
+                <div class="d-flex justify-content-between small">
+                  <span><i class="bi bi-square-fill me-1" style="color:#D8D3C4;"></i>Liquidités</span><span class="fw-semibold">9%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row g-3 mb-4">
+        <div class="col-lg-6">
+          <div class="card-chic h-100">
+            <div class="card-header-chic">
+              <div>
+                <div class="fw-semibold">Flux entrants / sortants</div>
+                <div class="text-faint small">Par trimestre</div>
+              </div>
+            </div>
+            <div class="card-body-chic">
+              <canvas id="chartFlows" height="150"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card-chic h-100">
+            <div class="card-header-chic">
+              <div>
+                <div class="fw-semibold">Activité récente</div>
+                <div class="text-faint small">Dernières opérations</div>
+              </div>
+              <a href="tableau.html" class="small">Tout voir</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-chic mb-0">
+                <thead><tr><th>Client</th><th>Opération</th><th>Montant</th><th>Statut</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td class="d-flex align-items-center gap-2"><div class="avatar-sm" style="width:26px;height:26px;font-size:.62rem;">SB</div>Sophie Bernard</td>
+                    <td class="text-muted-soft">Versement</td>
+                    <td class="font-mono">€12 400</td>
+                    <td><span class="badge-soft success">Validé</span></td>
+                  </tr>
+                  <tr>
+                    <td class="d-flex align-items-center gap-2"><div class="avatar-sm" style="width:26px;height:26px;font-size:.62rem;">JM</div>Julien Morel</td>
+                    <td class="text-muted-soft">Retrait</td>
+                    <td class="font-mono">€3 800</td>
+                    <td><span class="badge-soft warning">En attente</span></td>
+                  </tr>
+                  <tr>
+                    <td class="d-flex align-items-center gap-2"><div class="avatar-sm" style="width:26px;height:26px;font-size:.62rem;">AR</div>Amélie Roche</td>
+                    <td class="text-muted-soft">Arbitrage</td>
+                    <td class="font-mono">€27 150</td>
+                    <td><span class="badge-soft info">En cours</span></td>
+                  </tr>
+                  <tr>
+                    <td class="d-flex align-items-center gap-2"><div class="avatar-sm" style="width:26px;height:26px;font-size:.62rem;">TD</div>Thomas Dubois</td>
+                    <td class="text-muted-soft">Versement</td>
+                    <td class="font-mono">€6 000</td>
+                    <td><span class="badge-soft danger">Rejeté</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="text-center text-faint small py-3">
+      Meridian Suite Patrimoniale — Gabarit conçu pour un usage professionnel.
+    </footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('show');
+  });
+
+  Chart.defaults.font.family = "Inter";
+  Chart.defaults.color = "#6B6F7B";
+
+  // Portfolio line chart
+  const ctx1 = document.getElementById('chartPortfolio');
+  const gradient = ctx1.getContext('2d').createLinearGradient(0, 0, 0, 260);
+  gradient.addColorStop(0, 'rgba(169,129,75,.28)');
+  gradient.addColorStop(1, 'rgba(169,129,75,0)');
+
+  new Chart(ctx1, {
+    type: 'line',
+    data: {
+      labels: ['Aoû','Sep','Oct','Nov','Déc','Jan','Fév','Mar','Avr','Mai','Jun','Jul'],
+      datasets: [{
+        label: 'AUM (M€)',
+        data: [38.2, 39.1, 38.7, 40.3, 41.8, 41.2, 42.9, 44.1, 43.6, 45.8, 46.9, 48.2],
+        borderColor: '#A9814B',
+        backgroundColor: gradient,
+        fill: true,
+        tension: .4,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: '#A9814B',
+        borderWidth: 2.5,
+      }]
+    },
+    options: {
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: '#EFECE2' }, ticks: { callback: v => v + 'M' } }
+      },
+      interaction: { intersect: false, mode: 'index' }
+    }
+  });
+
+  // Allocation doughnut
+  new Chart(document.getElementById('chartAllocation'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Actions', 'Obligations', 'Immobilier', 'Liquidités'],
+      datasets: [{
+        data: [42, 31, 18, 9],
+        backgroundColor: ['#12141C', '#A9814B', '#45607C', '#D8D3C4'],
+        borderWidth: 3,
+        borderColor: '#fff'
+      }]
+    },
+    options: {
+      cutout: '68%',
+      plugins: { legend: { display: false } }
+    }
+  });
+
+  // Flows bar chart
+  new Chart(document.getElementById('chartFlows'), {
+    type: 'bar',
+    data: {
+      labels: ['T1', 'T2', 'T3', 'T4'],
+      datasets: [
+        { label: 'Entrées', data: [5.2, 6.8, 5.9, 7.4], backgroundColor: '#12141C', borderRadius: 4 },
+        { label: 'Sorties', data: [2.1, 3.4, 2.8, 3.0], backgroundColor: '#E5E1D6', borderRadius: 4 }
+      ]
+    },
+    options: {
+      plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { grid: { color: '#EFECE2' }, ticks: { callback: v => v + 'M' } }
+      }
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portefeuille clients — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-word">Meridian<small>Suite Patrimoniale</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Général</div>
+      <a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i> Tableau de bord</a>
+      <a href="tableau.html" class="nav-link active"><i class="bi bi-table"></i> Portefeuille clients</a>
+      <a href="formulaire.html" class="nav-link"><i class="bi bi-ui-checks"></i> Nouveau dossier</a>
+
+      <div class="nav-section-label">Analyse</div>
+      <a href="#" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Performance</a>
+      <a href="#" class="nav-link"><i class="bi bi-pie-chart"></i> Répartition</a>
+      <a href="#" class="nav-link"><i class="bi bi-file-earmark-text"></i> Rapports</a>
+
+      <div class="nav-section-label">Compte</div>
+      <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
+      <a href="login.html" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+    </nav>
+    <div class="sidebar-foot">© 2026 Meridian Suite — v2.4</div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-accent d-lg-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
+        <div class="search-box d-none d-md-block">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Rechercher un client, un dossier…">
+        </div>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="avatar-sm">CL</div>
+      </div>
+    </header>
+
+    <main class="main-content">
+
+      <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
+        <div>
+          <div class="eyebrow mb-1">Clients</div>
+          <h1 class="h3 font-display mb-0">Portefeuille clients</h1>
+          <p class="text-muted-soft mb-0">1 284 dossiers actifs — mis à jour il y a 12 minutes.</p>
+        </div>
+        <button class="btn btn-accent"><i class="bi bi-plus-lg me-1"></i> Ajouter un client</button>
+      </div>
+
+      <div class="card-chic">
+        <div class="card-header-chic flex-wrap gap-2">
+          <ul class="nav nav-pills gap-1">
+            <li class="nav-item"><button class="btn btn-sm btn-accent">Tous <span class="opacity-75">(1284)</span></button></li>
+            <li class="nav-item"><button class="btn btn-sm btn-outline-accent">Actifs <span class="opacity-75">(1140)</span></button></li>
+            <li class="nav-item"><button class="btn btn-sm btn-outline-accent">En attente <span class="opacity-75">(96)</span></button></li>
+            <li class="nav-item"><button class="btn btn-sm btn-outline-accent">Inactifs <span class="opacity-75">(48)</span></button></li>
+          </ul>
+          <div class="d-flex gap-2">
+            <select class="form-select form-select-sm" style="width:auto;">
+              <option>Trier : Encours (décroissant)</option>
+              <option>Trier : Nom (A–Z)</option>
+              <option>Trier : Date d'ouverture</option>
+            </select>
+            <button class="btn btn-sm btn-outline-accent"><i class="bi bi-filter"></i> Filtres</button>
+            <button class="btn btn-sm btn-outline-accent"><i class="bi bi-download"></i></button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-chic align-middle">
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="form-check-input"></th>
+                <th>Client</th>
+                <th>Gestionnaire</th>
+                <th>Encours</th>
+                <th>Performance YTD</th>
+                <th>Profil de risque</th>
+                <th>Statut</th>
+                <th>Ouverture</th>
+                <th class="text-end">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">SB</div>
+                    <div>
+                      <div class="fw-semibold">Sophie Bernard</div>
+                      <div class="text-faint" style="font-size:.75rem;">sophie.bernard@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Claire Lambert</td>
+                <td class="font-mono fw-semibold">€842 300</td>
+                <td class="font-mono" style="color:var(--color-success);">+14.2%</td>
+                <td><span class="badge-soft accent">Équilibré</span></td>
+                <td><span class="badge-soft success">Actif</span></td>
+                <td class="text-muted-soft">12 mars 2019</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">JM</div>
+                    <div>
+                      <div class="fw-semibold">Julien Morel</div>
+                      <div class="text-faint" style="font-size:.75rem;">j.morel@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Marc Petit</td>
+                <td class="font-mono fw-semibold">€215 900</td>
+                <td class="font-mono" style="color:var(--color-danger);">-2.1%</td>
+                <td><span class="badge-soft danger">Dynamique</span></td>
+                <td><span class="badge-soft warning">En attente</span></td>
+                <td class="text-muted-soft">4 juin 2021</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">AR</div>
+                    <div>
+                      <div class="fw-semibold">Amélie Roche</div>
+                      <div class="text-faint" style="font-size:.75rem;">amelie.roche@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Claire Lambert</td>
+                <td class="font-mono fw-semibold">€1 204 500</td>
+                <td class="font-mono" style="color:var(--color-success);">+9.7%</td>
+                <td><span class="badge-soft info">Prudent</span></td>
+                <td><span class="badge-soft success">Actif</span></td>
+                <td class="text-muted-soft">30 janv. 2017</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">TD</div>
+                    <div>
+                      <div class="fw-semibold">Thomas Dubois</div>
+                      <div class="text-faint" style="font-size:.75rem;">t.dubois@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Marc Petit</td>
+                <td class="font-mono fw-semibold">€58 400</td>
+                <td class="font-mono" style="color:var(--color-success);">+3.4%</td>
+                <td><span class="badge-soft accent">Équilibré</span></td>
+                <td><span class="badge-soft secondary" style="background:#EFECE2; color:#6B6F7B;">Inactif</span></td>
+                <td class="text-muted-soft">19 sept. 2022</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">NF</div>
+                    <div>
+                      <div class="fw-semibold">Nicolas Faure</div>
+                      <div class="text-faint" style="font-size:.75rem;">n.faure@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Claire Lambert</td>
+                <td class="font-mono fw-semibold">€396 700</td>
+                <td class="font-mono" style="color:var(--color-success);">+11.8%</td>
+                <td><span class="badge-soft danger">Dynamique</span></td>
+                <td><span class="badge-soft success">Actif</span></td>
+                <td class="text-muted-soft">2 mai 2020</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+              <tr>
+                <td><input type="checkbox" class="form-check-input"></td>
+                <td>
+                  <div class="d-flex align-items-center gap-2">
+                    <div class="avatar-sm">EL</div>
+                    <div>
+                      <div class="fw-semibold">Éléonore Lacroix</div>
+                      <div class="text-faint" style="font-size:.75rem;">e.lacroix@mail.com</div>
+                    </div>
+                  </div>
+                </td>
+                <td class="text-muted-soft">Marc Petit</td>
+                <td class="font-mono fw-semibold">€672 150</td>
+                <td class="font-mono" style="color:var(--color-success);">+6.3%</td>
+                <td><span class="badge-soft info">Prudent</span></td>
+                <td><span class="badge-soft success">Actif</span></td>
+                <td class="text-muted-soft">27 nov. 2018</td>
+                <td class="text-end">
+                  <button class="btn btn-sm btn-outline-accent"><i class="bi bi-three-dots"></i></button>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center px-3 py-3 border-top" style="border-color: var(--color-border) !important;">
+          <div class="text-muted-soft small">Affichage de 1 à 6 sur 1 284 résultats</div>
+          <nav>
+            <ul class="pagination pagination-sm mb-0">
+              <li class="page-item disabled"><a class="page-link" href="#">Précédent</a></li>
+              <li class="page-item active"><a class="page-link" href="#" style="background:var(--color-sidebar); border-color:var(--color-sidebar);">1</a></li>
+              <li class="page-item"><a class="page-link" href="#">2</a></li>
+              <li class="page-item"><a class="page-link" href="#">3</a></li>
+              <li class="page-item"><a class="page-link" href="#">…</a></li>
+              <li class="page-item"><a class="page-link" href="#">214</a></li>
+              <li class="page-item"><a class="page-link" href="#">Suivant</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="text-center text-faint small py-3">
+      Meridian Suite Patrimoniale — Gabarit conçu pour un usage professionnel.
+    </footer>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('show');
+  });
+</script>
+</body>
+</html>

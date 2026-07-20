@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nouveau dossier — Meridian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ================= SIDEBAR ================= -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">M</div>
+      <div class="brand-word">Meridian<small>Suite Patrimoniale</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Général</div>
+      <a href="dashboard.html" class="nav-link"><i class="bi bi-grid-1x2"></i> Tableau de bord</a>
+      <a href="tableau.html" class="nav-link"><i class="bi bi-table"></i> Portefeuille clients</a>
+      <a href="formulaire.html" class="nav-link active"><i class="bi bi-ui-checks"></i> Nouveau dossier</a>
+
+      <div class="nav-section-label">Analyse</div>
+      <a href="#" class="nav-link"><i class="bi bi-graph-up-arrow"></i> Performance</a>
+      <a href="#" class="nav-link"><i class="bi bi-pie-chart"></i> Répartition</a>
+      <a href="#" class="nav-link"><i class="bi bi-file-earmark-text"></i> Rapports</a>
+
+      <div class="nav-section-label">Compte</div>
+      <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
+      <a href="login.html" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+    </nav>
+    <div class="sidebar-foot">© 2026 Meridian Suite — v2.4</div>
+  </aside>
+
+  <!-- ================= MAIN ================= -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <div class="d-flex align-items-center gap-3">
+        <button class="btn btn-outline-accent d-lg-none" id="sidebarToggle"><i class="bi bi-list"></i></button>
+        <div class="search-box d-none d-md-block">
+          <i class="bi bi-search"></i>
+          <input type="search" class="form-control" placeholder="Rechercher…">
+        </div>
+      </div>
+      <div class="avatar-sm">CL</div>
+    </header>
+
+    <main class="main-content">
+
+      <div class="mb-4">
+        <div class="eyebrow mb-1">Onboarding</div>
+        <h1 class="h3 font-display mb-0">Ouvrir un nouveau dossier client</h1>
+        <p class="text-muted-soft mb-0">Tous les champs marqués d'un <span class="text-danger">*</span> sont obligatoires.</p>
+      </div>
+
+      <form novalidate>
+        <div class="row g-3">
+
+          <!-- ============ Informations personnelles ============ -->
+          <div class="col-12">
+            <div class="card-chic">
+              <div class="card-body-chic">
+                <div class="form-section-title">Informations personnelles</div>
+                <div class="text-muted-soft small mb-3">Identité du titulaire principal du dossier.</div>
+                <hr class="rule">
+
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Civilité</label>
+                    <select class="form-select">
+                      <option>Madame</option>
+                      <option>Monsieur</option>
+                      <option>Non précisé</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Prénom <span class="req">*</span></label>
+                    <input type="text" class="form-control" placeholder="Amélie" required>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Nom <span class="req">*</span></label>
+                    <input type="text" class="form-control" placeholder="Roche" required>
+                  </div>
+
+                  <div class="col-md-4">
+                    <label class="form-label">Date de naissance</label>
+                    <input type="date" class="form-control">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Nationalité</label>
+                    <input type="text" class="form-control" list="nationalites" placeholder="Française">
+                    <datalist id="nationalites">
+                      <option value="Française">
+                      <option value="Belge">
+                      <option value="Suisse">
+                      <option value="Canadienne">
+                      <option value="Luxembourgeoise">
+                    </datalist>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Situation familiale</label>
+                    <select class="form-select">
+                      <option>Célibataire</option>
+                      <option>Marié(e) / Pacsé(e)</option>
+                      <option>Divorcé(e)</option>
+                      <option>Veuf / Veuve</option>
+                    </select>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label">Notes internes</label>
+                    <textarea class="form-control" rows="3" placeholder="Contexte, recommandations, éléments à surveiller…"></textarea>
+                    <div class="form-hint">Visible uniquement par l'équipe de gestion.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Coordonnées ============ -->
+          <div class="col-12">
+            <div class="card-chic">
+              <div class="card-body-chic">
+                <div class="form-section-title">Coordonnées</div>
+                <div class="text-muted-soft small mb-3">Moyens de contact et adresse postale.</div>
+                <hr class="rule">
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Adresse e-mail <span class="req">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                      <input type="email" class="form-control" placeholder="amelie.roche@mail.com" required>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Téléphone</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                      <input type="tel" class="form-control" placeholder="+33 6 12 34 56 78">
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Site web / portfolio</label>
+                    <div class="input-group">
+                      <span class="input-group-text">https://</span>
+                      <input type="url" class="form-control" placeholder="www.exemple.com">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Numéro de client</label>
+                    <input type="text" class="form-control" value="MRD-2026-08841" disabled>
+                  </div>
+
+                  <div class="col-12"><hr class="rule my-2"></div>
+
+                  <div class="col-md-8">
+                    <label class="form-label">Adresse</label>
+                    <input type="text" class="form-control" placeholder="12 rue des Lilas">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Code postal</label>
+                    <input type="text" class="form-control" placeholder="75011" inputmode="numeric">
+                  </div>
+                  <div class="col-md-5">
+                    <label class="form-label">Ville</label>
+                    <input type="text" class="form-control" placeholder="Paris">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Pays</label>
+                    <select class="form-select">
+                      <option>France</option>
+                      <option>Belgique</option>
+                      <option>Suisse</option>
+                      <option>Luxembourg</option>
+                      <option>Canada</option>
+                    </select>
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Région</label>
+                    <select class="form-select">
+                      <option>Île-de-France</option>
+                      <option>Auvergne-Rhône-Alpes</option>
+                      <option>Occitanie</option>
+                      <option>Nouvelle-Aquitaine</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Profil d'investissement ============ -->
+          <div class="col-12">
+            <div class="card-chic">
+              <div class="card-body-chic">
+                <div class="form-section-title">Profil d'investissement</div>
+                <div class="text-muted-soft small mb-3">Préférences de gestion et tolérance au risque.</div>
+                <hr class="rule">
+
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">Montant à investir</label>
+                    <div class="input-group">
+                      <span class="input-group-text">€</span>
+                      <input type="number" class="form-control" placeholder="50 000" min="0" step="1000">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Horizon de placement</label>
+                    <input type="month" class="form-control">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">Rendez-vous de suivi</label>
+                    <input type="datetime-local" class="form-control">
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label d-flex justify-content-between">
+                      <span>Tolérance au risque</span>
+                      <span class="font-mono text-muted-soft" id="riskValue">Équilibré (5/10)</span>
+                    </label>
+                    <input type="range" class="form-range" min="1" max="10" value="5" id="riskRange">
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Couleur de repère du dossier</label>
+                    <div class="d-flex align-items-center gap-2">
+                      <input type="color" class="form-control form-control-color" value="#A9814B" title="Choisir une couleur">
+                      <span class="text-muted-soft small">Utilisée dans les vues Kanban</span>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label d-block">Classes d'actifs privilégiées</label>
+                    <div class="d-flex flex-wrap gap-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ck1" checked>
+                        <label class="form-check-label" for="ck1">Actions</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ck2" checked>
+                        <label class="form-check-label" for="ck2">Obligations</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ck3">
+                        <label class="form-check-label" for="ck3">Immobilier</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ck4">
+                        <label class="form-check-label" for="ck4">Private equity</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="ck5">
+                        <label class="form-check-label" for="ck5">Matières premières</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-12">
+                    <label class="form-label d-block">Fréquence de reporting</label>
+                    <div class="d-flex flex-wrap gap-4">
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reporting" id="rd1">
+                        <label class="form-check-label" for="rd1">Mensuel</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reporting" id="rd2" checked>
+                        <label class="form-check-label" for="rd2">Trimestriel</label>
+                      </div>
+                      <div class="form-check">
+                        <input class="form-check-input" type="radio" name="reporting" id="rd3">
+                        <label class="form-check-label" for="rd3">Annuel</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Gestionnaire assigné</label>
+                    <select class="form-select" multiple size="3">
+                      <option selected>Claire Lambert</option>
+                      <option>Marc Petit</option>
+                      <option>Julien Faure</option>
+                      <option>Inès Carton</option>
+                    </select>
+                    <div class="form-hint">Ctrl / Cmd + clic pour sélectionner plusieurs gestionnaires.</div>
+                  </div>
+
+                  <div class="col-md-6">
+                    <label class="form-label">Canal de contact préféré</label>
+                    <select class="form-select">
+                      <option>E-mail</option>
+                      <option>Téléphone</option>
+                      <option>Courrier postal</option>
+                      <option>Application mobile</option>
+                    </select>
+
+                    <div class="form-check form-switch mt-3">
+                      <input class="form-check-input" type="checkbox" role="switch" id="switch1" checked>
+                      <label class="form-check-label" for="switch1">Recevoir les alertes de marché</label>
+                    </div>
+                    <div class="form-check form-switch mt-2">
+                      <input class="form-check-input" type="checkbox" role="switch" id="switch2">
+                      <label class="form-check-label" for="switch2">Autoriser la prospection commerciale</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Documents ============ -->
+          <div class="col-12">
+            <div class="card-chic">
+              <div class="card-body-chic">
+                <div class="form-section-title">Documents</div>
+                <div class="text-muted-soft small mb-3">Pièces justificatives nécessaires à la validation KYC.</div>
+                <hr class="rule">
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Pièce d'identité <span class="req">*</span></label>
+                    <div class="file-drop">
+                      <i class="bi bi-cloud-arrow-up fs-3 d-block mb-2"></i>
+                      <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                      <div class="form-hint mb-0">PDF, JPG ou PNG — 10 Mo max.</div>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Justificatif de domicile</label>
+                    <div class="file-drop">
+                      <i class="bi bi-cloud-arrow-up fs-3 d-block mb-2"></i>
+                      <input type="file" class="form-control" accept=".pdf,.jpg,.png">
+                      <div class="form-hint mb-0">Daté de moins de 3 mois.</div>
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label">Autres pièces (facultatif)</label>
+                    <input type="file" class="form-control" multiple>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ============ Consentement ============ -->
+          <div class="col-12">
+            <div class="card-chic">
+              <div class="card-body-chic">
+                <div class="form-section-title">Consentement &amp; validation</div>
+                <hr class="rule">
+
+                <div class="mb-3">
+                  <label class="form-label">Mot de passe temporaire du portail client</label>
+                  <input type="password" class="form-control" placeholder="Généré automatiquement si laissé vide" style="max-width:360px;">
+                </div>
+
+                <div class="form-check mb-2">
+                  <input class="form-check-input" type="checkbox" id="consent1" required>
+                  <label class="form-check-label small" for="consent1">
+                    Je certifie l'exactitude des informations fournies et j'accepte les <a href="#">conditions générales</a>. <span class="req">*</span>
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="consent2">
+                  <label class="form-check-label small" for="consent2">
+                    J'accepte que mes données soient utilisées à des fins d'analyse patrimoniale interne.
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 d-flex justify-content-end gap-2 pb-4">
+            <button type="reset" class="btn btn-outline-accent">Annuler</button>
+            <button type="button" class="btn btn-outline-accent">Enregistrer le brouillon</button>
+            <button type="submit" class="btn btn-accent px-4">Créer le dossier <i class="bi bi-check2 ms-1"></i></button>
+          </div>
+
+        </div>
+      </form>
+
+    </main>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('show');
+  });
+
+  const riskLabels = {1:'Très prudent',2:'Prudent',3:'Prudent',4:'Modéré',5:'Équilibré',6:'Équilibré',7:'Dynamique',8:'Dynamique',9:'Offensif',10:'Très offensif'};
+  const riskRange = document.getElementById('riskRange');
+  const riskValue = document.getElementById('riskValue');
+  riskRange.addEventListener('input', () => {
+    riskValue.textContent = `${riskLabels[riskRange.value]} (${riskRange.value}/10)`;
+  });
+
+  document.querySelector('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!this.checkValidity()) { this.reportValidity(); return; }
+    alert('Dossier créé avec succès (démo statique).');
+  });
+</script>
+</body>
+</html>
