@@ -30,8 +30,6 @@ class HomeController extends BaseController
                 ->with('error', 'Le numéro est obligatoire.');
         }
 
-
-        // Cas 1 : le client existe déjà
         $client = $this->clientModel
             ->where('numero', $numero)
             ->first();
@@ -47,15 +45,11 @@ class HomeController extends BaseController
             return redirect()->to('/client/home');
         }
 
-
-        // Cas 2 : nouveau client
         if (!$this->prefixModel->isValid($numero)) {
             return redirect()->back()
                 ->with('error', 'Numéro invalide.');
         }
 
-
-        // Trouver l'opérateur
         $operateur = $this->prefixModel
             ->getOperateurByNumero($numero);
 
@@ -65,8 +59,6 @@ class HomeController extends BaseController
                 ->with('error', 'Opérateur introuvable.');
         }
 
-
-        // Création du client
         $data = [
             'numero'        => $numero,
             'id_operateur'  => $operateur['id'],
@@ -79,11 +71,8 @@ class HomeController extends BaseController
 
             dd($this->clientModel->errors());
         }
-        // Récupérer le client créé
         $clientId = $this->clientModel->getInsertID();
 
-
-        // Création de session
         session()->set([
             'client_id' => $clientId,
             'numero'    => $numero,

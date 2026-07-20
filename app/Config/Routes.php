@@ -15,3 +15,12 @@ $routes->post('home/connect', 'HomeController::connect');
 // Page après connexion
 $routes->get('client/home', 'ClientController::home');
 $routes->get('backoffice/dashboard', 'DashboardController::index');
+
+$routes->get('client/transaction','TransactionController::index');
+
+$routes->post('client/deposer/save','TransactionController::saveDeposer');
+
+
+$routes->post('client/retirer/save','TransactionController::saveRetirer');
+
+$routes->post('client/transferer/save','TransactionController::saveTransferer');
