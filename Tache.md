@@ -167,11 +167,11 @@
 
 # Page
 
--[][Tomefy] commision.php (15)
-    -[] page html CRUD
-    -[] function
-        -[] CRUD
-    -[] integration
+-[x][Tomefy] commision.php (15)
+    -[x] page html CRUD
+    -[x] function
+        -[x] CRUD
+    -[x] integration
 
 -[][Tomefy] dashboard.php (20)
     -[] html
