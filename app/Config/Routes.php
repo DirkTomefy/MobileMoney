@@ -19,6 +19,14 @@ $routes->get('client/home', 'SoldeController::index');
 
 $routes->get('backoffice/dashboard', 'DashboardController::index');
 
+$routes->get('client/transaction','TransactionController::index');
+
+$routes->post('client/deposer/save','TransactionController::saveDeposer');
+
+
+$routes->post('client/retirer/save','TransactionController::saveRetirer');
+
+$routes->post('client/transferer/save','TransactionController::saveTransferer');
 
 $routes->get('backoffice/tarif', 'TarifController::index');
 $routes->get('backoffice/tarif/getTarifs', 'TarifController::getTarifs');

@@ -48,6 +48,13 @@
 
 ## Front-ofice
 
+-[ok][Tsimbina] Login.php 
+    -[ok] page html+ css
+    -[ok] fonction 
+        -[ok] isSigned
+        -[ok] isValid
+        -[ok] signUp
+    -[ok] integration (avec session)
 -[x][Tsimbina] Login.php 
     -[x] page html+ css
     -[x]fonction 
@@ -69,8 +76,8 @@
         -[x] bouton avec redirection (id_type_transaction)
 
 -[][Tsimbina] Transaction.php
-    -[] page html+ css
-        -[] miovaova par rapport type_transaction
+    -[ok] page html+ css
+        -[ok] miovaova par rapport type_transaction
     -[] fonction
         -[] retirer($id_client,$montant,$date=today) (message erreur si solde tsy ampy ou depasse le seuil du montant) 
         -[] deposer($id_client,$montant,$date=today)

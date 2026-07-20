@@ -34,6 +34,9 @@ class HomeController extends BaseController
             return redirect()->back()->with('error', 'Le numéro est obligatoire.');
         }
 
+        $client = $this->clientModel
+            ->where('numero', $numero)
+            ->first();
         $client = $this->clientModel->where('numero', $numero)->first();
 
         if ($client) {
@@ -49,6 +52,8 @@ class HomeController extends BaseController
             return redirect()->back()->with('error', 'Numéro invalide.');
         }
 
+        $operateur = $this->prefixModel
+            ->getOperateurByNumero($numero);
         $operateur = $this->prefixModel->getOperateurByNumero($numero);
 
         if (!$operateur) {

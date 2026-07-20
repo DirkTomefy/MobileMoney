@@ -35,4 +35,52 @@ class ClientModel extends Model
             'date_creation' => date('Y-m-d H:i:s')
         ]) !== false;
     }
+
+    public function getSolde(int $id_client)
+    {
+        $db = \Config\Database::connect();
+
+
+        $sql = "
+        SELECT 
+            SUM(
+                CASE
+
+                    WHEN op.code = 'DEPOT'
+                    THEN t.montant
+
+
+                    WHEN op.code = 'RETRAIT'
+                    THEN -t.montant
+
+
+                    WHEN op.code = 'TRANSFERT'
+                    THEN -t.montant
+
+
+                    ELSE 0
+
+                END
+            ) AS solde
+
+        FROM t_transaction t
+
+        JOIN t_type_operation op
+        ON op.id = t.id_type_operation
+
+        WHERE t.id_client_source = ?
+    ";
+
+
+        $query = $db->query(
+            $sql,
+            [$id_client]
+        );
+
+
+        $result = $query->getRowArray();
+
+
+        return (float)($result['solde'] ?? 0);
+    }
 }
