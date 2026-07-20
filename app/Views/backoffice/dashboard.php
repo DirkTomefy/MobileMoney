@@ -115,7 +115,7 @@
                         <tr>
                             <th>Opérateur destinataire</th>
                             <th class="text-end">Nombre</th>
-                            <th class="text-end">Montant total (Ar)</th>
+                            <th class="text-end">Montant total à payer (Ar)</th>
                             <th class="text-end">Frais (Ar)</th>
                             <th class="text-end">Commission (Ar)</th>
                         </tr>
