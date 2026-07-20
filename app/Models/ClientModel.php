@@ -21,7 +21,7 @@ class ClientModel extends Model
     public function isSigned(string $numero): bool
     {
         return $this->where('numero', $numero)
-                    ->countAllResults() > 0;
+            ->countAllResults() > 0;
     }
 
 

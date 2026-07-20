@@ -23,7 +23,7 @@ class HomeController extends BaseController
 
     public function connect()
     {
-        $numero = $this->request->getPost('numero');
+        $numero = $this->request->getPost('phone');
 
         if (!$numero) {
             return redirect()->back()
@@ -50,7 +50,6 @@ class HomeController extends BaseController
 
         // Cas 2 : nouveau client
         if (!$this->prefixModel->isValid($numero)) {
-
             return redirect()->back()
                 ->with('error', 'Numéro invalide.');
         }
@@ -68,15 +67,18 @@ class HomeController extends BaseController
 
 
         // Création du client
-        $this->clientModel->insert([
+        $data = [
             'numero'        => $numero,
             'id_operateur'  => $operateur['id'],
             'nom'           => null,
             'prenom'        => null,
             'date_creation' => date('Y-m-d H:i:s')
-        ]);
+        ];
 
+        if (!$this->clientModel->insert($data)) {
 
+            dd($this->clientModel->errors());
+        }
         // Récupérer le client créé
         $clientId = $this->clientModel->getInsertID();
 

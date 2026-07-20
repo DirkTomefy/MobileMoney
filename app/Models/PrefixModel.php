@@ -23,7 +23,7 @@ class PrefixModel extends Model
             if (str_starts_with($numero, $libelle)) {
                 // récupérer la partie après le préfixe
                 $reste = substr($numero, strlen($libelle));
-                // doit contenir exactement 7 chiffres
+                // doit contenir exactement 7 chiffre
                 if (preg_match('/^[0-9]{7}$/', $reste)) {
                     return true;
                 }
@@ -34,12 +34,22 @@ class PrefixModel extends Model
 
     public function getOperateurByNumero(string $numero)
     {
-        return $this->select('t_operateur.*')
-            ->join(
-                't_operateur',
-                't_operateur.id = t_prefix.id_operateur'
-            )
-            ->like('t_prefix.libelle', $numero, 'after')
-            ->first();
+
+        $prefixes = $this->findAll();
+
+        foreach ($prefixes as $prefix) {
+
+            $libelle = trim($prefix['libelle']);
+
+            if (str_starts_with($numero, $libelle)) {
+
+                return $this->db->table('t_operateur')
+                    ->where('id', $prefix['id_operateur'])
+                    ->get()
+                    ->getRowArray();
+            }
+        }
+
+        return null;
     }
 }
