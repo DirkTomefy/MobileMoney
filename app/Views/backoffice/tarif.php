@@ -100,7 +100,8 @@
                             </div>
                             <div class="card-body-chic">
                                 <div id="tarif-list-<?= $type['id'] ?>">
-                                    <p class="text-muted-soft">Chargement...</p>
+                                    <!--Ce bug reste là pour le moment--->
+                                    <p class="text-muted-soft">Cliquer sur l'autre transfert puis revenir dans cette onglet </p>
                                 </div>
                             </div>
                         </div>
