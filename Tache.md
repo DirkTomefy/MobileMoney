@@ -80,18 +80,18 @@
 
 
 ## Back-office
--[][Tomefy] DashBoard.php
-    -[] page html +css
-        -[] formulaire (date debut et fin)
-        -[] situation global
-        -[] liste gain (+ graphe si possible)
+-[x][Tomefy] DashBoard.php
+    -[x] page html +css
+        -[x] formulaire (date debut et fin)
+        -[x] situation global
+        -[x] liste gain (+ graphe si possible)
 
-    -[] fonction
-        -[] getSituationGlobal($date_actuel)
-        -[] getSituationDetail ($date_debut, $date_fin)
-    -[] integration
-        -[] situation global
-        -[] liste gain (+ graphe si possible)
+    -[x] fonction
+        -[x] getSituationGlobal($date_actuel)
+        -[x] getSituationDetail ($date_debut, $date_fin)
+    -[x] integration
+        -[x] situation global
+        -[x] liste gain (+ graphe si possible)
 
 -[][Tsimbina] Portefeuille.php
     -[] page html +css
