@@ -47,8 +47,17 @@ $routes->group('backoffice', ['namespace' => 'App\Controllers'], function ($rout
     // Préfixes (CRUD)
     $routes->get('prefix', 'PrefixController::index');
     $routes->get('prefix/create', 'PrefixController::create');
-    $routes->post('prefix/store', 'PrefixController::store');
+    $routes->post('prefix/store', 'PrefixController::store'); // historique
     $routes->get('prefix/edit/(:num)', 'PrefixController::edit/$1');
     $routes->post('prefix/update/(:num)', 'PrefixController::update/$1');
     $routes->get('prefix/delete/(:num)', 'PrefixController::delete/$1');
+
+
+    //commission
+    $routes->get('commission', 'CommissionController::index');
+    $routes->get('commission/create', 'CommissionController::create');
+    $routes->post('commission/store', 'CommissionController::store');  // historique
+    $routes->get('commission/edit/(:num)', 'CommissionController::edit/$1');
+    $routes->post('commission/update/(:num)', 'CommissionController::update/$1');
+    $routes->get('commission/delete/(:num)', 'CommissionController::delete/$1');
 });
