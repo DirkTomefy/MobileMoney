@@ -132,10 +132,10 @@
 # Back office
 
 -[][Tomefy]  suffix.php (15)
-    -[] page html CRUD
-    -[] function
-        -[] CRUD
-    -[] integration
+    -[x] page html CRUD
+    -[x] function
+        -[x] CRUD
+    -[x] integration
 
 ## table + donne reel (10)
 [][Tsimbina]
