@@ -29,6 +29,16 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->post('transferer/save', 'TransactionController::saveTransferer');
 });
 
+$routes->get('backoffice/portefeuille', 'PortefeuilleController::index');
+
+$routes->get(
+    'client/info-numero',
+    'TransactionController::getInfoNumero'
+);
+$routes->get(
+    'client/get-commission',
+    'TransactionController::getCommission'
+);
 // ==========================================
 // Routes backoffice (opérateur connecté)
 // ==========================================

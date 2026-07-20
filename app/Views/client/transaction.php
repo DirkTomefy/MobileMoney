@@ -680,10 +680,28 @@
           <div class="fee-row">
 
             <span class="fee-label">
-              Frais :
+              Frais transfert :
             </span>
 
             <span class="fee-value" id="feeFee">
+              0 Ar
+            </span>
+
+          </div>
+
+
+
+          <!-- Affiché seulement si autre opérateur -->
+          <div
+            class="fee-row"
+            id="commissionRow"
+            style="display:none;">
+
+            <span class="fee-label">
+              Commission opérateur :
+            </span>
+
+            <span class="fee-value" id="feeCommission">
               0 Ar
             </span>
 
@@ -702,15 +720,25 @@
               0 Ar
             </span>
 
-
           </div>
-
 
 
         </div>
 
+        <div class="form-check mb-3">
 
+          <input
+            class="form-check-input"
+            type="checkbox"
+            id="addFees">
 
+          <label
+            class="form-check-label"
+            for="addFees">
+            Ajouter les frais et commissions au débit
+          </label>
+
+        </div>
 
 
         <div class="button-group">
@@ -786,66 +814,262 @@
     });
 
 
-
-
     // ============================
-    // Calcul frais transfert
+    // Variables transfert
     // ============================
-
 
     const montantTransfertInput =
       document.getElementById('montant-transfert');
+
+    const numeroInput =
+      document.querySelector('input[name="numero"]');
 
 
     const feeAmountSpan =
       document.getElementById('feeAmount');
 
-
     const feeFeeSpan =
       document.getElementById('feeFee');
-
 
     const feeTotalSpan =
       document.getElementById('feeTotal');
 
 
+    const commissionRow =
+      document.getElementById('commissionRow');
+
+
+    const feeCommission =
+      document.getElementById('feeCommission');
+
+
+    const addFees =
+      document.getElementById('addFees');
+
+
+
+    // opérateur du client connecté
+    const operateurSource =
+      <?= $client['id_operateur'] ?? 0 ?>;
+
+
+
+    let operateurCible = null;
+
+    let autreOperateur = false;
+
+    let pourcentageCommission = 0;
+
+
+
+    // frais transfert
+    let frais = 300;
+
+
+
+    // ============================
+    // Recherche destinataire
+    // ============================
+
+    if (numeroInput) {
+
+      numeroInput.addEventListener(
+        'change',
+        async function() {
+
+
+          let numero = this.value.trim();
+
+
+          if (numero === '') {
+            return;
+          }
+
+
+
+          let response =
+            await fetch(
+              "<?= base_url('client/info-numero?numero=') ?>" +
+              numero
+            );
+
+
+
+          let data =
+            await response.json();
+
+
+
+          if (data.success) {
+
+
+            operateurCible =
+              data.id_operateur;
+
+
+
+            /*
+             * Même opérateur
+             */
+            if (
+              operateurSource == operateurCible
+            ) {
+
+
+              autreOperateur = false;
+
+              pourcentageCommission = 0;
+
+
+            }
+
+            /*
+             * Autre opérateur
+             */
+            else {
+
+
+              autreOperateur = true;
+
+
+
+              // récupération commission
+              let responseCommission =
+                await fetch(
+
+                  "<?= base_url('client/get-commission?id_operateur_envoi=') ?>" +
+                  operateurSource +
+                  "&id_operateur_receveur=" +
+                  operateurCible
+
+                );
+
+
+
+              let commissionData =
+                await responseCommission.json();
+
+
+
+              if (commissionData.success) {
+
+
+                pourcentageCommission =
+                  commissionData.pourcentage;
+
+
+              } else {
+
+
+                pourcentageCommission = 0;
+
+
+              }
+
+
+            }
+
+
+
+            updateFees();
+
+
+          }
+
+
+        }
+      );
+
+    }
+
+
+
+
+    // ============================
+    // Calcul affichage frais
+    // ============================
 
 
     function updateFees() {
 
 
-      const montant =
-        parseFloat(montantTransfertInput.value) || 0;
+      let montant =
+        parseFloat(
+          montantTransfertInput.value
+        ) || 0;
 
 
-      const frais =
-        montant * 0.02;
+
+      let commission = 0;
 
 
-      const total =
-        montant + frais;
+
+      if (autreOperateur) {
+
+
+        commission =
+          montant * pourcentageCommission / 100;
+
+
+
+        commissionRow.style.display =
+          "flex";
+
+
+      } else {
+
+
+        commission = 0;
+
+
+        commissionRow.style.display =
+          "none";
+
+
+      }
+
+
+
+
+
+      let total = montant;
+
+
+
+      if (addFees.checked) {
+
+
+        total =
+          montant + frais + commission;
+
+
+      }
+
+
 
 
 
       feeAmountSpan.textContent =
-        montant.toLocaleString('fr-FR') + ' Ar';
+        montant.toLocaleString('fr-FR') +
+        " Ar";
 
 
 
       feeFeeSpan.textContent =
-        frais.toLocaleString('fr-FR', {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }) + ' Ar';
+        frais.toLocaleString('fr-FR') +
+        " Ar";
 
+
+
+      feeCommission.textContent =
+        commission.toLocaleString('fr-FR') +
+        " Ar";
 
 
 
       feeTotalSpan.textContent =
-        total.toLocaleString('fr-FR', {
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 0
-        }) + ' Ar';
+        total.toLocaleString('fr-FR') +
+        " Ar";
 
 
     }
@@ -853,10 +1077,26 @@
 
 
 
+    // ============================
+    // Events
+    // ============================
+
+
     if (montantTransfertInput) {
 
       montantTransfertInput.addEventListener(
         'input',
+        updateFees
+      );
+
+    }
+
+
+
+    if (addFees) {
+
+      addFees.addEventListener(
+        'change',
         updateFees
       );
 

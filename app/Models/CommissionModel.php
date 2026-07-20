@@ -117,4 +117,14 @@ class CommissionModel extends Model
     {
         return $this->delete($id);
     }
+   public function getCommission(
+        int $id_operateur_envoi,
+        int $id_operateur_receveur
+    ) {
+        return $this
+            ->where('id_operateur_envoi', $id_operateur_envoi)
+            ->where('id_operateur_receveur', $id_operateur_receveur)
+            ->where('valable', 1)
+            ->first();
+    }
 }
