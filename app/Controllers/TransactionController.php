@@ -199,4 +199,66 @@ class TransactionController extends BaseController
                 ->with('error', $e->getMessage());
         }
     }
+
+    public function getInfoNumero()
+    {
+        $numero = $this->request->getGet('numero');
+
+
+        $clientModel = new \App\Models\ClientModel();
+
+
+        $client = $clientModel->findByNumero($numero);
+
+
+        if (!$client) {
+
+            return $this->response->setJSON([
+                'success' => false
+            ]);
+        }
+
+
+        return $this->response->setJSON([
+
+            'success' => true,
+
+            'id_client' => $client['id'],
+
+            'id_operateur' => $client['id_operateur']
+
+        ]);
+    }
+    public function getCommission()
+    {
+        $idOperateurEnvoi = $this->request->getGet('id_operateur_envoi');
+        $idOperateurReceveur = $this->request->getGet('id_operateur_receveur');
+
+
+        $commissionModel = new \App\Models\CommissionModel();
+
+
+        $commission = $commissionModel->getCommission(
+            $idOperateurEnvoi,
+            $idOperateurReceveur
+        );
+
+
+        if (!$commission) {
+
+            return $this->response->setJSON([
+                'success' => false,
+                'pourcentage' => 0
+            ]);
+        }
+
+
+        return $this->response->setJSON([
+
+            'success' => true,
+
+            'pourcentage' => (float)$commission['pourcentage']
+
+        ]);
+    }
 }
