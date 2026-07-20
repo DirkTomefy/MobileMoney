@@ -17,7 +17,7 @@ $routes->get('/', 'HomeController::index');
 $routes->post('home/connect', 'HomeController::connect');
 
 // Page après connexion
-$routes->get('client/home', 'ClientController::home');
+$routes->get('client/home', 'SoldeController::index');
 
 $routes->get('backoffice/dashboard', 'DashboardController::index');
 
