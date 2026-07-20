@@ -167,13 +167,6 @@ class TransactionModel extends Model
             'frais'             => 0
         ]);
 
-        // Créditer le destinataire avec un dépôt
-        $this->deposer(
-            $id_client_cible,
-            $montant,
-            $date
-        );
-
         return true;
     }
     /**
