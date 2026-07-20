@@ -100,6 +100,7 @@
 </div>
 
 <!-- TABLEAU RÉPARTITION INTER-OPÉRATEUR -->
+<!-- TABLEAU RÉPARTITION INTER-OPÉRATEUR -->
 <div class="row g-3 mb-4">
     <div class="col-12">
         <div class="card-chic h-100">
@@ -115,16 +116,16 @@
                         <tr>
                             <th>Opérateur destinataire</th>
                             <th class="text-end">Nombre</th>
-                            <th class="text-end">Montant total à payer (Ar)</th>
+                            <th class="text-end">Montant total (Ar)</th>
                             <th class="text-end">Frais (Ar)</th>
                             <th class="text-end">Commission (Ar)</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php if (empty($repartition)): ?>
+                        <?php if (empty($repartition_inter_operateur)): ?>
                             <tr><td colspan="5" class="text-center text-muted-soft py-3">Aucun transfert inter-opérateur sur cette période.</td></tr>
                         <?php else: ?>
-                            <?php foreach ($repartition as $row): ?>
+                            <?php foreach ($repartition_inter_operateur as $row): ?>
                                 <tr>
                                     <td><?= esc($row['operateur_receveur'] ?? 'N/A') ?></td>
                                     <td class="text-end"><?= number_format($row['nb_transactions']) ?></td>
