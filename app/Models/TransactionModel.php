@@ -119,145 +119,56 @@ class TransactionModel extends Model
     /**
      * Effectue un dépôt pour un client
      */
-    public function transferer(
-        int $id_client_source,
-        int $id_client_cible,
-        float $montant,
-        ?string $date = null
-    ) {
+   public function transferer(
+    int $id_client_source,
+    int $id_client_cible,
+    float $montant,
+    ?string $date = null,
+    bool $addFees = true
+) {
+    $date = $date ?? date('Y-m-d H:i:s');
 
-        $date = $date ?? date('Y-m-d H:i:s');
+    $source = $this->clientModel->find($id_client_source);
+    $cible  = $this->clientModel->find($id_client_cible);
 
+    if (!$source) throw new Exception("Client source introuvable.");
+    if (!$cible)  throw new Exception("Client destinataire introuvable.");
 
-        // Récupération des clients
-        $source = $this->clientModel->find($id_client_source);
-        $cible  = $this->clientModel->find($id_client_cible);
+    // Type TRANSFERT
+    $operation = $this->typeOperationModel->where('code', 'TRANSFERT')->first();
+    if (!$operation) throw new Exception("Type opération TRANSFERT introuvable.");
 
+    // Tarif
+    $tarif = $this->tarifModel->getTarif($source['id_operateur'], $operation['id'], $montant);
+    if (!$tarif) throw new Exception("Tarif transfert introuvable.");
+    $frais = (float)$tarif['prix'];
 
-        if (!$source) {
-            throw new Exception("Client source introuvable.");
-        }
+    // Commission (0 si même opérateur ou non définie)
+    $commissionModel = new CommissionModel();
+    $commissionData = $commissionModel->getCommission($source['id_operateur'], $cible['id_operateur']);
+    $commission = $commissionData ? ($montant * $commissionData['pourcentage'] / 100) : 0;
 
+    // Calcul du total à débiter selon l'option
+    $totalDebit = $addFees ? ($montant + $frais + $commission) : $montant;
 
-        if (!$cible) {
-            throw new Exception("Client destinataire introuvable.");
-        }
-
-
-
-        // Vérification solde
-        // Attention : ici les frais et commission ne sont pas encore pris en compte
-        $solde = $this->getSolde($id_client_source);
-
-
-        if ($solde < $montant) {
-            throw new Exception("Solde insuffisant.");
-        }
-
-
-
-        // Type TRANSFERT
-        $operation = $this->typeOperationModel
-            ->where('code', 'TRANSFERT')
-            ->first();
-
-
-        if (!$operation) {
-            throw new Exception("Type opération TRANSFERT introuvable.");
-        }
-
-
-
-        // Vérification existence tarif
-        $this->checkSeuil(
-            $source['id_operateur'],
-            $operation['id'],
-            $montant
-        );
-
-
-
-        /*
-     * Recherche commission entre opérateurs
-     */
-        $commissionModel = new CommissionModel();
-
-
-        $commissionData = $commissionModel->getCommission(
-            $source['id_operateur'],
-            $cible['id_operateur']
-        );
-
-
-        if (!$commissionData) {
-            throw new Exception(
-                "Aucune commission définie entre "
-                    . $source['id_operateur']
-                    . " et "
-                    . $cible['id_operateur']
-            );
-        }
-
-
-
-        // Calcul commission sur montant
-        $commission =
-            $montant * $commissionData['pourcentage'] / 100;
-
-
-        $tarif = $this->tarifModel->getTarif(
-            $source['id_operateur'],
-            $operation['id'],
-            $montant
-        );
-
-
-        if (!$tarif) {
-            throw new Exception("Tarif transfert introuvable.");
-        }
-
-
-        $frais = (float) $tarif['prix'];
-
-       
-
-
-
-        /*
-     * Vérification solde réel
-     * montant + frais + commission
-     */
-
-        $totalDebit = $montant + $frais + $commission;
-
-
-        if ($solde < $totalDebit) {
-            throw new Exception(
-                "Solde insuffisant pour couvrir montant, frais et commission."
-            );
-        }
-
-
-
-        // Enregistrement transaction
-        $this->insert([
-
-            'id_client_source'  => $id_client_source,
-
-            'id_client_cible'   => $id_client_cible,
-
-            'id_type_operation' => $operation['id'],
-
-            'date'              => $date,
-
-            'montant'           => $montant,
-
-            'frais'             => $frais,
-
-            'commission'        => $commission
-        ]);
-        return true;
+    // Vérifier le solde
+    $solde = $this->getSolde($id_client_source);
+    if ($solde < $totalDebit) {
+        throw new Exception("Solde insuffisant pour couvrir le montant et les frais.");
     }
+
+    // Enregistrement
+    return $this->insert([
+        'id_client_source'  => $id_client_source,
+        'id_client_cible'   => $id_client_cible,
+        'id_type_operation' => $operation['id'],
+        'date'              => $date,
+        'montant'           => $montant,
+        'frais'             => $frais,
+        'commission'        => $commission,
+    ]);
+}
+
 
     /**
      * Récupère le solde d'un client à une date donnée

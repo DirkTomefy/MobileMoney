@@ -71,3 +71,7 @@ $routes->group('backoffice', ['namespace' => 'App\Controllers'], function ($rout
     $routes->post('commission/update/(:num)', 'CommissionController::update/$1');
     $routes->get('commission/delete/(:num)', 'CommissionController::delete/$1');
 });
+
+$routes->get('client/info-numero', 'TransactionController::getInfoNumero');
+$routes->get('client/get-commission', 'TransactionController::getCommission');
+$routes->get('client/get-frais-transfert', 'TransactionController::getFraisTransfert');

@@ -48,10 +48,15 @@ class CommissionModel extends Model
     }
 
     
-    public function getCommission($id)
-    {
-        return $this->find($id);
-    }
+
+public function getCommission(int $id_operateur_envoi, int $id_operateur_receveur)
+{
+    return $this->where('id_operateur_envoi', $id_operateur_envoi)
+                ->where('id_operateur_receveur', $id_operateur_receveur)
+                ->where('valable', 1)
+                ->first(); // retourne null si non trouvée
+}
+
 
        public function isUnique($envoi, $receveur, $excludeId = null)
     {
@@ -116,15 +121,5 @@ class CommissionModel extends Model
     public function deleteCommission($id)
     {
         return $this->delete($id);
-    }
-   public function getCommission(
-        int $id_operateur_envoi,
-        int $id_operateur_receveur
-    ) {
-        return $this
-            ->where('id_operateur_envoi', $id_operateur_envoi)
-            ->where('id_operateur_receveur', $id_operateur_receveur)
-            ->where('valable', 1)
-            ->first();
     }
 }
