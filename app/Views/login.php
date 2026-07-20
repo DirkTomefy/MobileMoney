@@ -4,12 +4,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Connexion — Meridian</title>
+  <title>Connexion — Mobile Money</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="assets/css/style.css" rel="stylesheet">
+  <link href="<?= base_url('assets/css/style.css') ?>" rel="stylesheet">
   <style>
     .tab-buttons {
       display: flex;
@@ -31,7 +31,7 @@
     }
 
     .tab-button.active {
-      color: var(--color-accent, #8C6B3B);
+      color: var(--color-accent, #A9814B);
     }
 
     .tab-button.active::after {
@@ -41,11 +41,11 @@
       left: 0;
       right: 0;
       height: 2px;
-      background: var(--color-accent, #8C6B3B);
+      background: var(--color-accent, #A9814B);
     }
 
     .tab-button:hover {
-      color: var(--color-accent, #8C6B3B);
+      color: var(--color-accent, #A9814B);
     }
 
     .form-section {
@@ -65,8 +65,8 @@
     <!-- Visual side -->
     <div class="auth-visual">
       <div class="d-flex align-items-center gap-3">
-        <div class="brand-mark">M</div>
-        <div class="brand-word">Meridian<small>Suite Patrimoniale</small></div>
+        <div class="brand-mark">MM</div>
+        <div class="brand-word">Mobile Money<small>Plateforme de transferts</small></div>
       </div>
 
       <div class="quote">
@@ -77,8 +77,8 @@
         <hr class="rule-brass" style="background:var(--color-accent); opacity:.9;">
         <div class="d-flex gap-4">
           <div>
-            <div class="font-display fs-4">€2.4Md</div>
-            <div class="eyebrow" style="color:#8C6B3B;">d'actifs suivis</div>
+            <div class="font-display fs-4">Ar 2.4Md</div>
+            <div class="eyebrow" style="color:#8C6B3B;">de transactions</div>
           </div>
           <div>
             <div class="font-display fs-4">99.98%</div>
@@ -93,18 +93,20 @@
       <div class="auth-card">
 
         <div class="mb-4 d-lg-none d-flex align-items-center gap-2">
-          <div class="brand-mark dark">M</div>
-          <div class="brand-word dark">Meridian</div>
+          <div class="brand-mark dark">MM</div>
+          <div class="brand-word dark">Mobile Money</div>
         </div>
 
         <div class="eyebrow mb-2">Espace privé</div>
         <h1 class="h3 font-display mb-1">Bon retour parmi nous</h1>
         <p class="text-muted-soft mb-4">Connectez-vous pour accéder à votre tableau de bord.</p>
+
         <?php if (session()->getFlashdata('error')): ?>
           <div class="alert alert-danger">
             <?= session()->getFlashdata('error') ?>
           </div>
         <?php endif; ?>
+
         <!-- Tab Buttons -->
         <div class="tab-buttons">
           <button type="button" class="tab-button active" data-tab="client">
@@ -131,8 +133,17 @@
         </form>
 
         <!-- OPERATEUR FORM -->
-        <form class="form-section" id="operateurForm" novalidate>
-          <button type="submit" class="btn btn-accent w-100 py-2 mb-3">
+        <form class="form-section" id="operateurForm" novalidate action="<?= base_url('home/connectOperateur') ?>" method="post">
+          <div class="mb-3">
+            <label for="operateur_id" class="form-label">Sélectionnez votre opérateur</label>
+            <select class="form-select" id="operateur_id" name="operateur_id" required>
+              <option value="">Choisir...</option>
+              <?php foreach ($operateurs as $op): ?>
+                <option value="<?= $op['id'] ?>"><?= esc($op['libelle']) ?></option>
+              <?php endforeach; ?>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-accent w-100 py-2">
             Se connecter <i class="bi bi-arrow-right ms-1"></i>
           </button>
         </form>
@@ -181,35 +192,22 @@
       });
     });
 
-    // Password visibility toggle for operateur form
-    document.querySelectorAll('.togglePwd').forEach(button => {
-      button.addEventListener('click', function() {
-        const targetId = this.getAttribute('data-target');
-        const pwd = document.getElementById(targetId);
-        const icon = this.querySelector('i');
-        const show = pwd.type === 'password';
-        pwd.type = show ? 'text' : 'password';
-        icon.className = show ? 'bi bi-eye-slash' : 'bi bi-eye';
-      });
-    });
-
-    // Form submissions
-    // Vérification avant envoi du formulaire client
+    // Form submission client
     document.getElementById('clientForm').addEventListener('submit', function(e) {
-
       const phone = document.getElementById('phone').value.trim();
-
       if (!phone) {
         e.preventDefault();
         alert("Veuillez entrer votre numéro.");
       }
-
     });
 
+    // Form submission operateur : validation du select
     document.getElementById('operateurForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      console.log('Connexion Opérateur');
-      window.location.href = 'dashboard.html';
+      const operateurId = document.getElementById('operateur_id').value;
+      if (!operateurId) {
+        e.preventDefault();
+        alert("Veuillez sélectionner un opérateur.");
+      }
     });
   </script>
 </body>

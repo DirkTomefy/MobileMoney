@@ -56,17 +56,17 @@
         -[ok] signUp
     -[ok] integration (avec session)
 
--[][Tomefy] Solde.php
-    -[] page html+ css
+-[x][Tomefy] Solde.php
+    -[x] page html+ css
         -bouton action( retrait, depot ,transfert)
-    -[] fonction
-        -[] getSolde($id_client ,$date=today)
-        -[] getAllTransaction($id_client, $paginer ,$type_transactions, date_min,date_max)
+    -[x] fonction
+        -[x] getSolde($id_client ,$date=today)
+        -[x] getAllTransaction($id_client, $paginer ,$type_transactions, date_min,date_max)
 
-    -[] integration 
-        -[]list
-        -[]solde
-        -[] bouton avec redirection (id_type_transaction)
+    -[x] integration 
+        -[x]list
+        -[x]solde
+        -[x] bouton avec redirection (id_type_transaction)
 
 -[][Tsimbina] Transaction.php
     -[ok] page html+ css
@@ -94,24 +94,23 @@
         -[x] liste gain (+ graphe si possible)
 
 -[][Tsimbina] Portefeuille.php
-    -[] page html +css
-        -[] input date
-        -[] liste portefeuille
-    -[] fonction
-        -[] getAllPortefeuille($date)
+    -[x] page html +css
+        -[x] input date
+        -[x] liste portefeuille
+    -[x] fonction
+        -[x] getAllPortefeuille($date)
 
 -[][Tomefy] Tarif.php
-    -[] page html+css
-        -[] onglet type_transaction(retrait , transfert)
-        -[] liste tarif
-            -[] input prix modifiable
-        -[] bouton valider
+    -[x] page html+css
+        -[] onglet type_transaction(retrait , transfert) (il y a encore un erreur js)
+        -[x] liste tarif
+            -[x] input prix modifiable
+        -[x] bouton valider
     -[] fonction
-        -[] getAllTarif($id_type_operation )
-        -[] updateTarif($id_tarif,$prix,$date=today)
-            -[] uptable t_tarif_operation
-            -[] insert t_historique_operation + update date null before
+        -[x] getAllTarif($id_type_operation )
+        -[x] updateTarif($id_tarif,$prix,$date=today)
+            -[x] uptable t_tarif_operation
+            -[x] insert t_historique_operation + update date null before
     -[] integration
-        -[] list
-        -[] input
-        
+        -[x] list
+        -[x] input
