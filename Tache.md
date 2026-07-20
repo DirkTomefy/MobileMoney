@@ -175,7 +175,6 @@
 
 -[][Tomefy] dashboard.php (20)
     -[] html
-        -[] checkbox pour les opperateurs
         -[] montant a envoyer autre operateur
     -[] fonction
         -[] getSituationGlobal($date_actuel)
