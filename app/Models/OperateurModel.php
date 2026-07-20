@@ -6,6 +6,7 @@ use CodeIgniter\Model;
 
 class OperateurModel extends Model
 {
+    //! Branche DashBoard.php
     protected $db;
 
     public function __construct()
@@ -162,4 +163,55 @@ class OperateurModel extends Model
         }
         return array_values($dates);
     }
+
+    //! Branche Tarif
+    public function getAllTarif($id_type_operation, $operateur = 1)
+{
+    return $this->db->table('t_tarif_operation')
+        ->where('id_operateur', $operateur)
+        ->where('id_type_operation', $id_type_operation)
+        ->orderBy('min', 'ASC')
+        ->get()
+        ->getResultArray();
 }
+
+public function updateTarif($id_tarif, $prix, $date = null)
+{
+    if ($date === null) {
+        $date = date('Y-m-d H:i:s');
+    }
+
+    $db = $this->db;
+
+    $old = $db->table('t_tarif_operation')->select('prix')->where('id', $id_tarif)->get()->getRow();
+    if (!$old) {
+        return false;
+    }
+    $ancien_prix = $old->prix;
+
+    $db->table('t_tarif_operation')->where('id', $id_tarif)->update(['prix' => $prix]);
+
+    $currentHist = $db->table('t_historique_tarif')
+        ->where('id_tarif_operation', $id_tarif)
+        ->where('date_changement', null)
+        ->get()
+        ->getRow();
+
+    if ($currentHist) {
+        $db->table('t_historique_tarif')
+            ->where('id', $currentHist->id)
+            ->update(['date_changement' => $date]);
+    }
+
+    $db->table('t_historique_tarif')->insert([
+        'id_tarif_operation' => $id_tarif,
+        'prix' => $prix,
+        'date_changement' => null,
+    ]);
+
+    return true;
+}
+
+}
+
+
