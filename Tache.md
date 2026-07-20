@@ -55,6 +55,13 @@
         -[ok] isValid
         -[ok] signUp
     -[ok] integration (avec session)
+-[x][Tsimbina] Login.php 
+    -[x] page html+ css
+    -[x]fonction 
+        -[x] isSigned
+        -[x] isValid
+        -[x] signUp
+    -[x] integration (avec session)
 
 -[x][Tomefy] Solde.php
     -[x] page html+ css
@@ -114,3 +121,9 @@
     -[] integration
         -[x] list
         -[x] input
+
+
+- Finition 
+    -[x] [Tsimbina]refacto css + navbar
+    -[][Tomefy] Déconnexion 
+    
