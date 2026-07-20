@@ -6,7 +6,6 @@ use CodeIgniter\Model;
 
 class OperateurModel extends Model
 {
-    //! Branche DashBoard.php
     protected $db;
 
     public function __construct()
@@ -15,27 +14,88 @@ class OperateurModel extends Model
         $this->db = \Config\Database::connect();
     }
 
-    public function getSituationGlobal($date = null, $operateur = 1)
-    {
-        $date = $this->normalizeDate($date, true);
-        $typeIds = $this->getTypeIds();
+    // ================================================================
+    // Dashboard methods
+    // ================================================================
 
-        if (empty($typeIds)) {
-            return $this->emptySituation($date, $operateur);
+    public function getDashboardData($dateMin, $dateMax, $operateur = 1)
+    {
+        $totaux = $this->getSituationGlobale($dateMin, $dateMax, $operateur);
+        $totalFrais = 0;
+        $totalMontant = 0;
+        $totalTransactions = 0;
+        $totalRetrait = ['frais' => 0, 'nb' => 0, 'montant' => 0];
+        $totalTransfert = ['frais' => 0, 'nb' => 0, 'montant' => 0];
+
+        foreach ($totaux as $row) {
+            $code = strtolower($row['type_code']);
+            if ($code === 'retrait') {
+                $totalRetrait = [
+                    'frais'   => (float) $row['total_frais'],
+                    'nb'      => (int) $row['nb'],
+                    'montant' => (float) $row['total_montant'],
+                ];
+            } elseif ($code === 'transfert') {
+                $totalTransfert = [
+                    'frais'   => (float) $row['total_frais'],
+                    'nb'      => (int) $row['nb'],
+                    'montant' => (float) $row['total_montant'],
+                ];
+            }
+            $totalFrais += (float) $row['total_frais'];
+            $totalMontant += (float) $row['total_montant'];
+            $totalTransactions += (int) $row['nb'];
         }
 
-        $builder = $this->buildBaseQuery($operateur);
-        $builder->select('toper.code as type_code, COUNT(t.id) as nb, SUM(t.montant) as total_montant, SUM(t.frais) as total_frais');
-        $builder->where('t.date <=', $date);
-        $builder->whereIn('t.id_type_operation', $typeIds);
+        $detailData = $this->getSituationDetail($dateMin, $dateMax, $operateur);
+        $labels = $dataFrais = $dataRetrait = $dataTransfert = [];
+        if (!isset($detailData['error'])) {
+            foreach ($detailData['detail'] as $jour) {
+                $labels[] = $jour['date'];
+                $dataFrais[] = $jour['total_frais'];
+                $dataRetrait[] = $jour['retrait']['frais'];
+                $dataTransfert[] = $jour['transfert']['frais'];
+            }
+        }
+
+        return [
+            'date_min'       => $dateMin,
+            'date_max'       => $dateMax,
+            'total_frais'    => $totalFrais,
+            'total_montant'  => $totalMontant,
+            'total_transactions' => $totalTransactions,
+            'total_retrait'  => $totalRetrait,
+            'total_transfert'=> $totalTransfert,
+            'labels'         => json_encode($labels),
+            'data_frais'     => json_encode($dataFrais),
+            'data_retrait'   => json_encode($dataRetrait),
+            'data_transfert' => json_encode($dataTransfert),
+            'detail'         => $detailData['detail'] ?? [],
+            'error'          => $detailData['error'] ?? null,
+        ];
+    }
+
+    public function getSituationGlobale($dateMin, $dateMax, $operateur)
+    {
+        // Normalisation des dates pour inclure toute la journée
+        $debut = $this->normalizeDate($dateMin, false);
+        $fin   = $this->normalizeDate($dateMax, true);
+
+        $builder = $this->db->table('t_transaction t');
+        $builder->select("
+            toper.code as type_code,
+            SUM(t.montant) as total_montant,
+            SUM(t.frais) as total_frais,
+            COUNT(t.id) as nb
+        ");
+        $builder->join('t_client c', 'c.id = t.id_client_source', 'left');
+        $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+        $builder->where('c.id_operateur', $operateur);
+        $builder->where('t.date >=', $debut);
+        $builder->where('t.date <=', $fin);
+        $builder->whereIn('toper.code', ['RETRAIT', 'TRANSFERT']);
         $builder->groupBy('toper.code');
-
-        $results = $builder->get()->getResultArray();
-        $data = $this->aggregateGlobal($results);
-        $data['date'] = $date;
-        $data['operateur'] = $operateur;
-
-        return $data;
+        return $builder->get()->getResultArray();
     }
 
     public function getSituationDetail($date_debut, $date_fin, $operateur = 1)
@@ -69,6 +129,10 @@ class OperateurModel extends Model
         ];
     }
 
+    // ================================================================
+    // Helper methods
+    // ================================================================
+
     private function normalizeDate($date, $endOfDay)
     {
         if ($date === null) {
@@ -101,41 +165,6 @@ class OperateurModel extends Model
             ->where('c.id_operateur', $operateur);
     }
 
-    private function emptySituation($date, $operateur)
-    {
-        return [
-            'date' => $date,
-            'operateur' => $operateur,
-            'retrait' => ['frais' => 0, 'nb' => 0, 'montant' => 0],
-            'transfert' => ['frais' => 0, 'nb' => 0, 'montant' => 0],
-            'total_frais' => 0,
-            'total_transactions' => 0,
-        ];
-    }
-
-    private function aggregateGlobal($results)
-    {
-        $data = [
-            'retrait' => ['frais' => 0, 'nb' => 0, 'montant' => 0],
-            'transfert' => ['frais' => 0, 'nb' => 0, 'montant' => 0],
-            'total_frais' => 0,
-            'total_transactions' => 0,
-        ];
-        foreach ($results as $row) {
-            $code = strtolower($row['type_code']);
-            if (isset($data[$code])) {
-                $data[$code] = [
-                    'frais' => (float) $row['total_frais'],
-                    'nb' => (int) $row['nb'],
-                    'montant' => (float) $row['total_montant'],
-                ];
-            }
-        }
-        $data['total_frais'] = $data['retrait']['frais'] + $data['transfert']['frais'];
-        $data['total_transactions'] = $data['retrait']['nb'] + $data['transfert']['nb'];
-        return $data;
-    }
-
     private function aggregateDetail($results)
     {
         $dates = [];
@@ -164,54 +193,53 @@ class OperateurModel extends Model
         return array_values($dates);
     }
 
-    //! Branche Tarif
+    // ================================================================
+    // Tarif methods
+    // ================================================================
+
     public function getAllTarif($id_type_operation, $operateur = 1)
-{
-    return $this->db->table('t_tarif_operation')
-        ->where('id_operateur', $operateur)
-        ->where('id_type_operation', $id_type_operation)
-        ->orderBy('min', 'ASC')
-        ->get()
-        ->getResultArray();
-}
-
-public function updateTarif($id_tarif, $prix, $date = null)
-{
-    if ($date === null) {
-        $date = date('Y-m-d H:i:s');
+    {
+        return $this->db->table('t_tarif_operation')
+            ->where('id_operateur', $operateur)
+            ->where('id_type_operation', $id_type_operation)
+            ->orderBy('min', 'ASC')
+            ->get()
+            ->getResultArray();
     }
 
-    $db = $this->db;
+    public function updateTarif($id_tarif, $prix, $date = null)
+    {
+        if ($date === null) {
+            $date = date('Y-m-d H:i:s');
+        }
 
-    $old = $db->table('t_tarif_operation')->select('prix')->where('id', $id_tarif)->get()->getRow();
-    if (!$old) {
-        return false;
+        $db = $this->db;
+
+        $old = $db->table('t_tarif_operation')->select('prix')->where('id', $id_tarif)->get()->getRow();
+        if (!$old) {
+            return false;
+        }
+
+        $db->table('t_tarif_operation')->where('id', $id_tarif)->update(['prix' => $prix]);
+
+        $currentHist = $db->table('t_historique_tarif')
+            ->where('id_tarif_operation', $id_tarif)
+            ->where('date_changement', null)
+            ->get()
+            ->getRow();
+
+        if ($currentHist) {
+            $db->table('t_historique_tarif')
+                ->where('id', $currentHist->id)
+                ->update(['date_changement' => $date]);
+        }
+
+        $db->table('t_historique_tarif')->insert([
+            'id_tarif_operation' => $id_tarif,
+            'prix' => $prix,
+            'date_changement' => null,
+        ]);
+
+        return true;
     }
-    $ancien_prix = $old->prix;
-
-    $db->table('t_tarif_operation')->where('id', $id_tarif)->update(['prix' => $prix]);
-
-    $currentHist = $db->table('t_historique_tarif')
-        ->where('id_tarif_operation', $id_tarif)
-        ->where('date_changement', null)
-        ->get()
-        ->getRow();
-
-    if ($currentHist) {
-        $db->table('t_historique_tarif')
-            ->where('id', $currentHist->id)
-            ->update(['date_changement' => $date]);
-    }
-
-    $db->table('t_historique_tarif')->insert([
-        'id_tarif_operation' => $id_tarif,
-        'prix' => $prix,
-        'date_changement' => null,
-    ]);
-
-    return true;
 }
-
-}
-
-
