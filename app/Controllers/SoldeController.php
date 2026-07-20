@@ -71,7 +71,7 @@ class SoldeController extends BaseController
         if (!$typeValide) {
             return redirect()->to('/client/solde')->with('error', 'Action invalide.');
         }
-        // Redirection vers un formulaire de transaction (à créer)
-        return redirect()->to('/client/transaction/create?type=' . $type);
+        
+        return redirect()->to('/client/transaction');//TODO
     }
 }

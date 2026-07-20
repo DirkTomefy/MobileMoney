@@ -27,9 +27,9 @@
             <a href="#" class="nav-link"><i class="bi bi-clock-history"></i> Historique</a>
             <a href="#" class="nav-link"><i class="bi bi-person"></i> Profil</a>
             <div class="nav-section-label">Actions</div>
-            <a href="<?= base_url('client/solde/action/depot') ?>" class="nav-link"><i class="bi bi-plus-circle"></i> Dépôt</a>
-            <a href="<?= base_url('client/solde/action/retrait') ?>" class="nav-link"><i class="bi bi-dash-circle"></i> Retrait</a>
-            <a href="<?= base_url('client/solde/action/transfert') ?>" class="nav-link"><i class="bi bi-arrow-left-right"></i> Transfert</a>
+            <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-plus-circle"></i> Dépôt</a>
+            <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-dash-circle"></i> Retrait</a>
+            <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-arrow-left-right"></i> Transfert</a>
             <div class="nav-section-label">Compte</div>
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
             <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>

@@ -69,13 +69,6 @@ class TransactionModel extends Model
             $montant
         );
 
-        $this->clientModel->update(
-            $id_client,
-            [
-                'solde' => $solde - $montant
-            ]
-        );
-
         return $this->insert([
             'id_client_source'  => $id_client,
             'id_client_cible'   => null,
@@ -86,9 +79,6 @@ class TransactionModel extends Model
         ]);
     }
 
-    /**
-     * Effectue un dépôt pour un client
-     */
     public function deposer(
         int $id_client,
         float $montant,
@@ -102,8 +92,6 @@ class TransactionModel extends Model
             throw new Exception("Client introuvable.");
         }
 
-        $solde = $this->getSolde($id_client);
-
         $operation = $this->typeOperationModel
             ->where('code', 'DEPOT')
             ->first();
@@ -112,18 +100,10 @@ class TransactionModel extends Model
             throw new Exception("Type opération DEPOT introuvable.");
         }
 
-        // Vérification seuil
         $this->checkSeuil(
             $client['id_operateur'],
             $operation['id'],
             $montant
-        );
-
-        $this->clientModel->update(
-            $id_client,
-            [
-                'solde' => $solde + $montant
-            ]
         );
 
         return $this->insert([
@@ -135,10 +115,10 @@ class TransactionModel extends Model
             'frais'             => 0
         ]);
     }
-
     /**
-     * Effectue un transfert entre deux clients
+     * Effectue un dépôt pour un client
      */
+
     public function transferer(
         int $id_client_source,
         int $id_client_cible,
@@ -148,15 +128,15 @@ class TransactionModel extends Model
         $date = $date ?? date('Y-m-d H:i:s');
 
         $source = $this->clientModel->find($id_client_source);
-        $cible = $this->clientModel->find($id_client_cible);
+        $cible  = $this->clientModel->find($id_client_cible);
 
         if (!$source || !$cible) {
             throw new Exception("Client introuvable.");
         }
 
-        $soldeSource = $this->getSolde($id_client_source);
+        $solde = $this->getSolde($id_client_source);
 
-        if ($soldeSource < $montant) {
+        if ($solde < $montant) {
             throw new Exception("Solde insuffisant.");
         }
 
@@ -174,21 +154,6 @@ class TransactionModel extends Model
             $montant
         );
 
-        $soldeCible = $this->getSolde($id_client_cible);
-
-        $this->clientModel->update(
-            $id_client_source,
-            [
-                'solde' => $soldeSource - $montant
-            ]
-        );
-        $this->clientModel->update(
-            $id_client_cible,
-            [
-                'solde' => $soldeCible + $montant
-            ]
-        );
-
         return $this->insert([
             'id_client_source'  => $id_client_source,
             'id_client_cible'   => $id_client_cible,
@@ -198,7 +163,6 @@ class TransactionModel extends Model
             'frais'             => 0
         ]);
     }
-
     /**
      * Récupère le solde d'un client à une date donnée
      */
@@ -307,8 +271,8 @@ class TransactionModel extends Model
             $idTypeOperation,
             $montant
         );
-        
-        if (!$tarif) {
+
+        if (!$tarif && $idTypeOperation !== 1) { // 1 = DEPOT
             throw new Exception(
                 "Montant hors limite autorisée."
             );
