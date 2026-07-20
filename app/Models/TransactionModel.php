@@ -118,7 +118,6 @@ class TransactionModel extends Model
     /**
      * Effectue un dépôt pour un client
      */
-
     public function transferer(
         int $id_client_source,
         int $id_client_cible,
@@ -130,8 +129,12 @@ class TransactionModel extends Model
         $source = $this->clientModel->find($id_client_source);
         $cible  = $this->clientModel->find($id_client_cible);
 
-        if (!$source || !$cible) {
-            throw new Exception("Client introuvable.");
+        if (!$source) {
+            throw new Exception("Client source introuvable.");
+        }
+
+        if (!$cible) {
+            throw new Exception("Client destinataire introuvable.");
         }
 
         $solde = $this->getSolde($id_client_source);
@@ -154,7 +157,8 @@ class TransactionModel extends Model
             $montant
         );
 
-        return $this->insert([
+        // Enregistrer le transfert (débit du client source)
+        $this->insert([
             'id_client_source'  => $id_client_source,
             'id_client_cible'   => $id_client_cible,
             'id_type_operation' => $operation['id'],
@@ -162,6 +166,15 @@ class TransactionModel extends Model
             'montant'           => $montant,
             'frais'             => 0
         ]);
+
+        // Créditer le destinataire avec un dépôt
+        $this->deposer(
+            $id_client_cible,
+            $montant,
+            $date
+        );
+
+        return true;
     }
     /**
      * Récupère le solde d'un client à une date donnée
