@@ -1,4 +1,4 @@
-# Table (Tomefyss)
+# Table (Tomefy)
 
 -t_operateur
     -id
@@ -48,29 +48,36 @@
 
 ## Front-ofice
 
--[] Login.php
-    -[] page html+ css
-    -[] fonction 
-        -[] isSigned
-        -[] isValid
-        -[] signUp
-    -[] integration (avec session)
+-[ok][Tsimbina] Login.php 
+    -[ok] page html+ css
+    -[ok] fonction 
+        -[ok] isSigned
+        -[ok] isValid
+        -[ok] signUp
+    -[ok] integration (avec session)
+-[x][Tsimbina] Login.php 
+    -[x] page html+ css
+    -[x]fonction 
+        -[x] isSigned
+        -[x] isValid
+        -[x] signUp
+    -[x] integration (avec session)
 
--[] Solde.php
-    -[] page html+ css
+-[x][Tomefy] Solde.php
+    -[x] page html+ css
         -bouton action( retrait, depot ,transfert)
-    -[] fonction
-        -[] getSolde($id_client ,$date=today)
-        -[] getAllTransaction($id_client, $paginer ,$type_transactions, date_min,date_max)
+    -[x] fonction
+        -[x] getSolde($id_client ,$date=today)
+        -[x] getAllTransaction($id_client, $paginer ,$type_transactions, date_min,date_max)
 
-    -[] integration 
-        -[]list
-        -[]solde
-        -[] bouton avec redirection (id_type_transaction)
+    -[x] integration 
+        -[x]list
+        -[x]solde
+        -[x] bouton avec redirection (id_type_transaction)
 
--[] Transaction.php
-    -[] page html+ css
-        -[] miovaova par rapport type_transaction
+-[][Tsimbina] Transaction.php
+    -[ok] page html+ css
+        -[ok] miovaova par rapport type_transaction
     -[] fonction
         -[] retirer($id_client,$montant,$date=today) (message erreur si solde tsy ampy ou depasse le seuil du montant) 
         -[] deposer($id_client,$montant,$date=today)
@@ -80,37 +87,43 @@
 
 
 ## Back-office
--[] DashBoard.php
-    -[] page html +css
-        -[] formulaire (date debut et fin)
-        -[] situation global
-        -[] liste gain (+ graphe si possible)
+-[x][Tomefy] DashBoard.php
+    -[x] page html +css
+        -[x] formulaire (date debut et fin)
+        -[x] situation global
+        -[x] liste gain (+ graphe si possible)
 
+    -[x] fonction
+        -[x] getSituationGlobal($date_actuel)
+        -[x] getSituationDetail ($date_debut, $date_fin)
+    -[x] integration
+        -[x] situation global
+        -[x] liste gain (+ graphe si possible)
+
+-[][Tsimbina] Portefeuille.php
+    -[x] page html +css
+        -[x] input date
+        -[x] liste portefeuille
+    -[x] fonction
+        -[x] getAllPortefeuille($date)
+
+-[][Tomefy] Tarif.php
+    -[x] page html+css
+        -[] onglet type_transaction(retrait , transfert) (il y a encore un erreur js)
+        -[x] liste tarif
+            -[x] input prix modifiable
+        -[x] bouton valider
     -[] fonction
-        -[] getSituationGlobal($date_actuel)
-        -[] getSituationDetail ($date_debut, $date_fin)
+        -[x] getAllTarif($id_type_operation )
+        -[x] updateTarif($id_tarif,$prix,$date=today)
+            -[x] uptable t_tarif_operation
+            -[x] insert t_historique_operation + update date null before
     -[] integration
-        -[] situation global
-        -[] liste gain (+ graphe si possible)
+        -[x] list
+        -[x] input
 
--[] Portefeuille.php
-    -[] page html +css
-        -[] input date
-        -[] liste portefeuille
-    -[] fonction
-        -[] getAllPortefeuille($date)
 
--[] Tarif.php
-    -[] page html+css
-        -[] onglet type_transaction(retrait , transfert)
-        -[] liste tarif
-            -[] input prix modifiable
-        -[] bouton valider
-    -[] fonction
-        -[] getAllTarif($id_type_operation )
-        -[] updateTarif($id_tarif,$prix,$date=today)
-            -[] uptable t_tarif_operation
-            -[] insert t_historique_operation + update date null before
-    -[] integration
-        -[] list
-        -[] input
+- Finition 
+    -[x] [Tsimbina]refacto css + navbar
+    -[][Tomefy] Déconnexion 
+    
