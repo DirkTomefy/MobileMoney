@@ -20,6 +20,11 @@ class OperateurModel extends Model
         $this->db = \Config\Database::connect();
     }
 
+public function getAllOperateurs()
+{
+    return $this->db->table('t_operateur')->get()->getResultArray();
+}
+
     // ================================================================
     // Dashboard methods
     // ================================================================

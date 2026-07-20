@@ -4,21 +4,26 @@ namespace App\Controllers;
 
 use App\Models\ClientModel;
 use App\Models\PrefixModel;
-use Exception;
+use App\Models\OperateurModel;
 
 class HomeController extends BaseController
 {
     protected ClientModel $clientModel;
     protected PrefixModel $prefixModel;
+    protected OperateurModel $operateurModel;
 
     public function __construct()
     {
         $this->clientModel = new ClientModel();
         $this->prefixModel = new PrefixModel();
+        $this->operateurModel = new OperateurModel();
     }
+
     public function index()
     {
-        return view('login');
+        // Récupérer la liste des opérateurs pour le select
+        $operateurs = $this->operateurModel->getAllOperateurs();
+        return view('login', ['operateurs' => $operateurs]);
     }
 
     public function connect()
@@ -26,47 +31,30 @@ class HomeController extends BaseController
         $numero = $this->request->getPost('phone');
 
         if (!$numero) {
-            return redirect()->back()
-                ->with('error', 'Le numéro est obligatoire.');
+            return redirect()->back()->with('error', 'Le numéro est obligatoire.');
         }
 
-
-        // Cas 1 : le client existe déjà
-        $client = $this->clientModel
-            ->where('numero', $numero)
-            ->first();
+        $client = $this->clientModel->where('numero', $numero)->first();
 
         if ($client) {
-
             session()->set([
                 'client_id' => $client['id'],
                 'numero'    => $client['numero'],
                 'connecte'  => true
             ]);
-
             return redirect()->to('/client/home');
         }
 
-
-        // Cas 2 : nouveau client
         if (!$this->prefixModel->isValid($numero)) {
-            return redirect()->back()
-                ->with('error', 'Numéro invalide.');
+            return redirect()->back()->with('error', 'Numéro invalide.');
         }
 
-
-        // Trouver l'opérateur
-        $operateur = $this->prefixModel
-            ->getOperateurByNumero($numero);
+        $operateur = $this->prefixModel->getOperateurByNumero($numero);
 
         if (!$operateur) {
-
-            return redirect()->back()
-                ->with('error', 'Opérateur introuvable.');
+            return redirect()->back()->with('error', 'Opérateur introuvable.');
         }
 
-
-        // Création du client
         $data = [
             'numero'        => $numero,
             'id_operateur'  => $operateur['id'],
@@ -76,21 +64,39 @@ class HomeController extends BaseController
         ];
 
         if (!$this->clientModel->insert($data)) {
-
             dd($this->clientModel->errors());
         }
-        // Récupérer le client créé
+
         $clientId = $this->clientModel->getInsertID();
 
-
-        // Création de session
         session()->set([
             'client_id' => $clientId,
             'numero'    => $numero,
             'connecte'  => true
         ]);
 
-
         return redirect()->to('/client/home');
+    }
+
+    public function connectOperateur()
+    {
+        $operateurId = $this->request->getPost('operateur_id');
+
+        if (!$operateurId) {
+            return redirect()->back()->with('error', 'Veuillez sélectionner un opérateur.');
+        }
+
+        $operateur = $this->operateurModel->find($operateurId);
+        if (!$operateur) {
+            return redirect()->back()->with('error', 'Opérateur invalide.');
+        }
+
+        session()->set([
+            'operateur_id' => $operateurId,
+            'operateur_connecte' => true,
+            'connecte' => true 
+        ]);
+
+        return redirect()->to('/backoffice/dashboard');
     }
 }
