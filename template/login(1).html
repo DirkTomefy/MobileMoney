@@ -75,10 +75,6 @@
       <hr class="rule-brass" style="background:var(--color-accent); opacity:.9;">
       <div class="d-flex gap-4">
         <div>
-          <div class="font-display fs-4">18 ans</div>
-          <div class="eyebrow" style="color:#8C6B3B;">d'expérience</div>
-        </div>
-        <div>
           <div class="font-display fs-4">€2.4Md</div>
           <div class="eyebrow" style="color:#8C6B3B;">d'actifs suivis</div>
         </div>
@@ -130,36 +126,7 @@
 
       <!-- OPERATEUR FORM -->
       <form class="form-section" id="operateurForm" novalidate>
-        <div class="mb-3">
-          <label for="email-op" class="form-label">Adresse e-mail</label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-            <input type="email" class="form-control" id="email-op" placeholder="vous@entreprise.com" required>
-          </div>
-        </div>
-
-        <div class="mb-2">
-          <label for="password-op" class="form-label d-flex justify-content-between">
-            <span>Mot de passe</span>
-            <a href="#" class="fw-normal small">Mot de passe oublié ?</a>
-          </label>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-lock"></i></span>
-            <input type="password" class="form-control" id="password-op" placeholder="••••••••" required>
-            <button class="btn btn-outline-accent" type="button" class="togglePwd" data-target="password-op" aria-label="Afficher le mot de passe">
-              <i class="bi bi-eye"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="form-check mb-4 mt-3">
-          <input class="form-check-input" type="checkbox" id="remember" checked>
-          <label class="form-check-label small text-muted-soft" for="remember">
-            Rester connecté sur cet appareil
-          </label>
-        </div>
-
-        <button type="submit" class="btn btn-accent w-100 py-2">
+        <button type="submit" class="btn btn-accent w-100 py-2 mb-3">
           Se connecter <i class="bi bi-arrow-right ms-1"></i>
         </button>
       </form>
@@ -167,8 +134,7 @@
       <div class="divider-text" id="divider" style="display: none;">ou continuer avec</div>
 
       <div class="d-flex gap-2" id="socialButtons" style="display: none;">
-        <button class="btn btn-social flex-fill rounded-3"><i class="bi bi-google"></i> Google</button>
-        <button class="btn btn-social flex-fill rounded-3"><i class="bi bi-microsoft"></i> Microsoft</button>
+        <button class="btn btn-social flex-fill rounded-3"><i class="bi bi-phone"></i> Mobile Money</button>
       </div>
 
       <p class="text-center text-muted-soft small mt-4 mb-0">
@@ -233,12 +199,8 @@
 
   document.getElementById('operateurForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    const email = document.getElementById('email-op').value;
-    const password = document.getElementById('password-op').value;
-    if (email.trim() && password.trim()) {
-      console.log('Connexion Opérateur avec:', email);
-      window.location.href = 'dashboard.html';
-    }
+    console.log('Connexion Opérateur');
+    window.location.href = 'dashboard.html';
   });
 </script>
 </body>

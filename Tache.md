@@ -49,7 +49,7 @@
 ## Front-ofice
 
 -[][Tsimbina] Login.php 
-    -[] page html+ css
+    -[ok] page html+ css
     -[] fonction 
         -[] isSigned
         -[] isValid

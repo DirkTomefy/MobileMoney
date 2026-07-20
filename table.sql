@@ -53,9 +53,9 @@ CREATE TABLE t_historique_tarif (
 
 CREATE TABLE t_client (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nom TEXT NOT NULL,
-    prenom TEXT NOT NULL,
-    id_operateur INTEGER NOT NULL,
+    nom TEXT ,
+    prenom TEXT ,
+    id_operateur INTEGER ,
     numero TEXT NOT NULL,   -- sans espaces
     date_creation DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_operateur) REFERENCES t_operateur(id)
