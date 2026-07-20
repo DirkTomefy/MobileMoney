@@ -6,12 +6,7 @@ use CodeIgniter\Model;
 
 class OperateurModel extends Model
 {
-    protected $table = 't_operateur';
-    protected $primaryKey = 'id';
 
-    protected $allowedFields = [
-        'libelle'
-    ];
     protected $db;
 
     public function __construct()
@@ -20,15 +15,70 @@ class OperateurModel extends Model
         $this->db = \Config\Database::connect();
     }
 
-public function getAllOperateurs()
-{
-    return $this->db->table('t_operateur')->get()->getResultArray();
-}
+ 
+    public function getSituationGlobale($dateMin, $dateMax, $operateur)
+    {
+        $debut = $this->normalizeDate($dateMin, false);
+        $fin = $this->normalizeDate($dateMax, true);
 
-    // ================================================================
-    // Dashboard methods
-    // ================================================================
+        $builder = $this->db->table('t_transaction t');
+        $builder->select("
+            toper.code as type_code,
+            SUM(t.montant) as total_montant,
+            SUM(t.frais) as total_frais,
+            COUNT(t.id) as nb
+        ");
+        $builder->join('t_client c', 'c.id = t.id_client_source', 'left');
+        $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+        $builder->where('c.id_operateur', $operateur);
+        $builder->where('t.date >=', $debut);
+        $builder->where('t.date <=', $fin);
+        $builder->whereIn('toper.code', ['RETRAIT', 'TRANSFERT']);
+        $builder->groupBy('toper.code');
+        return $builder->get()->getResultArray();
+    }
 
+   
+    public function getSituationDetail($date_debut, $date_fin, $operateur = 1)
+    {
+        $debut = $this->normalizeDate($date_debut, false);
+        $fin = $this->normalizeDate($date_fin, true);
+        if (!$debut || !$fin) {
+            return ['error' => 'Format de date invalide.'];
+        }
+
+        $typeIds = $this->getTypeIds();
+        if (empty($typeIds)) {
+            return ['error' => 'Types d\'opération RETRAIT ou TRANSFERT introuvables.'];
+        }
+
+        $builder = $this->buildBaseQuery($operateur);
+        $builder->select("
+            DATE(t.date) as jour,
+            toper.code as type_code,
+            COUNT(t.id) as nb,
+            SUM(t.montant) as total_montant,
+            SUM(t.frais) as total_frais
+        ");
+        $builder->where('t.date >=', $debut);
+        $builder->where('t.date <=', $fin);
+        $builder->whereIn('t.id_type_operation', $typeIds);
+        $builder->groupBy('DATE(t.date), toper.code');
+        $builder->orderBy('jour', 'ASC');
+
+        $results = $builder->get()->getResultArray();
+        $detail = $this->aggregateDetail($results);
+
+        return [
+            'periode' => ['debut' => $debut, 'fin' => $fin],
+            'operateur' => $operateur,
+            'detail' => $detail
+        ];
+    }
+
+    /**
+     * Agrège les données pour le dashboard
+     */
     public function getDashboardData($dateMin, $dateMax, $operateur = 1)
     {
         $totaux = $this->getSituationGlobale($dateMin, $dateMax, $operateur);
@@ -42,14 +92,14 @@ public function getAllOperateurs()
             $code = strtolower($row['type_code']);
             if ($code === 'retrait') {
                 $totalRetrait = [
-                    'frais'   => (float) $row['total_frais'],
-                    'nb'      => (int) $row['nb'],
+                    'frais' => (float) $row['total_frais'],
+                    'nb' => (int) $row['nb'],
                     'montant' => (float) $row['total_montant'],
                 ];
             } elseif ($code === 'transfert') {
                 $totalTransfert = [
-                    'frais'   => (float) $row['total_frais'],
-                    'nb'      => (int) $row['nb'],
+                    'frais' => (float) $row['total_frais'],
+                    'nb' => (int) $row['nb'],
                     'montant' => (float) $row['total_montant'],
                 ];
             }
@@ -70,75 +120,37 @@ public function getAllOperateurs()
         }
 
         return [
-            'date_min'       => $dateMin,
-            'date_max'       => $dateMax,
-            'total_frais'    => $totalFrais,
-            'total_montant'  => $totalMontant,
+            'date_min' => $dateMin,
+            'date_max' => $dateMax,
+            'total_frais' => $totalFrais,
+            'total_montant' => $totalMontant,
             'total_transactions' => $totalTransactions,
-            'total_retrait'  => $totalRetrait,
-            'total_transfert'=> $totalTransfert,
-            'labels'         => json_encode($labels),
-            'data_frais'     => json_encode($dataFrais),
-            'data_retrait'   => json_encode($dataRetrait),
+            'total_retrait' => $totalRetrait,
+            'total_transfert' => $totalTransfert,
+            'labels' => json_encode($labels),
+            'data_frais' => json_encode($dataFrais),
+            'data_retrait' => json_encode($dataRetrait),
             'data_transfert' => json_encode($dataTransfert),
-            'detail'         => $detailData['detail'] ?? [],
-            'error'          => $detailData['error'] ?? null,
+            'detail' => $detailData['detail'] ?? [],
+            'error' => $detailData['error'] ?? null,
         ];
     }
 
-    public function getSituationGlobale($dateMin, $dateMax, $operateur)
-    {
-        // Normalisation des dates pour inclure toute la journée
-        $debut = $this->normalizeDate($dateMin, false);
-        $fin   = $this->normalizeDate($dateMax, true);
+    protected $table = 't_operateur';
+    protected $primaryKey = 'id';
 
-        $builder = $this->db->table('t_transaction t');
-        $builder->select("
-            toper.code as type_code,
-            SUM(t.montant) as total_montant,
-            SUM(t.frais) as total_frais,
-            COUNT(t.id) as nb
-        ");
-        $builder->join('t_client c', 'c.id = t.id_client_source', 'left');
-        $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
-        $builder->where('c.id_operateur', $operateur);
-        $builder->where('t.date >=', $debut);
-        $builder->where('t.date <=', $fin);
-        $builder->whereIn('toper.code', ['RETRAIT', 'TRANSFERT']);
-        $builder->groupBy('toper.code');
-        return $builder->get()->getResultArray();
+    protected $allowedFields = [
+        'libelle'
+    ];
+
+
+    public function getAllOperateurs()
+    {
+        return $this->db->table('t_operateur')->get()->getResultArray();
     }
 
-    public function getSituationDetail($date_debut, $date_fin, $operateur = 1)
-    {
-        $debut = $this->normalizeDate($date_debut, false);
-        $fin = $this->normalizeDate($date_fin, true);
-        if (!$debut || !$fin) {
-            return ['error' => 'Format de date invalide. Utilisez Y-m-d.'];
-        }
 
-        $typeIds = $this->getTypeIds();
-        if (empty($typeIds)) {
-            return ['error' => 'Types d\'opération RETRAIT ou TRANSFERT introuvables.'];
-        }
 
-        $builder = $this->buildBaseQuery($operateur);
-        $builder->select("DATE(t.date) as jour, toper.code as type_code, COUNT(t.id) as nb, SUM(t.montant) as total_montant, SUM(t.frais) as total_frais");
-        $builder->where('t.date >=', $debut);
-        $builder->where('t.date <=', $fin);
-        $builder->whereIn('t.id_type_operation', $typeIds);
-        $builder->groupBy('DATE(t.date), toper.code');
-        $builder->orderBy('jour', 'ASC');
-
-        $results = $builder->get()->getResultArray();
-        $detail = $this->aggregateDetail($results);
-
-        return [
-            'periode' => ['debut' => $debut, 'fin' => $fin],
-            'operateur' => $operateur,
-            'detail' => $detail
-        ];
-    }
 
     // ================================================================
     // Helper methods

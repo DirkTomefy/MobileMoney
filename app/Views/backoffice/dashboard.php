@@ -1,19 +1,22 @@
 <?= $this->extend('layouts/common_admin') ?>
 <?= $this->section('content') ?>
+
 <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
     <div>
         <div class="eyebrow mb-1">Vue d'ensemble</div>
         <h1 class="h3 font-display mb-0">Bonjour, Admin</h1>
-        <p class="text-muted-soft mb-0">Synthèse des opérations du <?= date('d/m/Y', strtotime($date_min)) ?> au <?= date('d/m/Y', strtotime($date_max)) ?>.</p>
+        <p class="text-muted-soft mb-0">
+            Synthèse des opérations du <?= date('d/m/Y', strtotime($date_min)) ?> au <?= date('d/m/Y', strtotime($date_max)) ?>.
+        </p>
     </div>
     <div class="d-flex gap-2">
         <form method="get" class="d-flex gap-2 align-items-center">
             <div>
-                <label for="date_min" class="form-label small">Du (optionnel)</label>
+                <label for="date_min" class="form-label small">Du</label>
                 <input type="date" name="date_min" id="date_min" class="form-control form-control-sm" value="<?= $date_min ?>">
             </div>
             <div>
-                <label for="date_max" class="form-label small">Au </label>
+                <label for="date_max" class="form-label small">Au</label>
                 <input type="date" name="date_max" id="date_max" class="form-control form-control-sm" value="<?= $date_max ?>">
             </div>
             <button type="submit" class="btn btn-accent btn-sm mt-1"><i class="bi bi-filter"></i> Filtrer</button>
@@ -22,8 +25,9 @@
 </div>
 
 <?php if (isset($error)): ?>
-    <div class="alert alert-warning"><?= $error ?></div>
+    <div class="alert alert-warning"><?= esc($error) ?></div>
 <?php else: ?>
+
 <div class="row g-3 mb-4">
     <div class="col-6 col-xl-3">
         <div class="card-chic stat-card h-100">
@@ -132,16 +136,17 @@
     </div>
 </div>
 <?php endif; ?>
+
 <?= $this->endSection() ?>
 
 <?= $this->section('scripts') ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 <script>
-  window.chartData = {
-    labels: <?= $labels ?: '[]' ?>,
-    dataRetrait: <?= $data_retrait ?: '[]' ?>,
-    dataTransfert: <?= $data_transfert ?: '[]' ?>
-  };
+    window.chartData = {
+        labels: <?= $labels ?: '[]' ?>,
+        dataRetrait: <?= $data_retrait ?: '[]' ?>,
+        dataTransfert: <?= $data_transfert ?: '[]' ?>
+    };
 </script>
 <script src="<?= base_url('assets/js/dashboard.js') ?>"></script>
 <?= $this->endSection() ?>
