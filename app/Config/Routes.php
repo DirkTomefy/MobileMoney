@@ -13,10 +13,8 @@ use App\Controllers\TarifController;
 
 $routes->get('/', 'HomeController::index');
 
-// Traitement du bouton "Se connecter"
 $routes->post('home/connect', 'HomeController::connect');
 
-// Page après connexion
 $routes->get('client/home', 'SoldeController::index');
 
 $routes->get('backoffice/dashboard', 'DashboardController::index');
@@ -31,3 +29,5 @@ $routes->group('client', function ($routes) {
     $routes->get('solde', 'SoldeController::index');
     $routes->get('solde/action/(:any)', 'SoldeController::action/$1');
 });
+
+$routes->get('backoffice/portefeuille', 'PortefeuilleController::index');
