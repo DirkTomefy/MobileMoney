@@ -76,12 +76,42 @@ class OperateurModel extends Model
         ];
     }
 
-    /**
-     * Agrège les données pour le dashboard
-     */
-    public function getDashboardData($dateMin, $dateMax, $operateur = 1)
+    public function getRepartitionInterOperateur($dateMin, $dateMax, $operateur = null)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t');
+    $builder->select("
+        op_receveur.libelle as operateur_receveur,
+        SUM(t.montant) as total_montant,
+        SUM(t.frais) as total_frais,
+        COUNT(t.id) as nb_transactions
+    ");
+    $builder->join('t_client source', 'source.id = t.id_client_source');
+    $builder->join('t_client cible', 'cible.id = t.id_client_cible', 'left');
+    $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+    $builder->join('t_operateur op_receveur', 'op_receveur.id = cible.id_operateur', 'left');
+    $builder->where('toper.code', 'TRANSFERT');
+    $builder->where('t.date >=', $debut);
+    $builder->where('t.date <=', $fin);
+    $builder->where('source.id_operateur !=', 'cible.id_operateur', false);
+
+    if ($operateur) {
+        $builder->where('source.id_operateur', $operateur);
+    }
+
+    $builder->groupBy('cible.id_operateur, op_receveur.libelle');
+    $builder->orderBy('total_montant', 'DESC');
+
+    return $builder->get()->getResultArray();
+}
+
+    
+        public function getDashboardData($dateMin, $dateMax, $operateur = 1)
     {
         $totaux = $this->getSituationGlobale($dateMin, $dateMax, $operateur);
+
         $totalFrais = 0;
         $totalMontant = 0;
         $totalTransactions = 0;
@@ -92,14 +122,14 @@ class OperateurModel extends Model
             $code = strtolower($row['type_code']);
             if ($code === 'retrait') {
                 $totalRetrait = [
-                    'frais' => (float) $row['total_frais'],
-                    'nb' => (int) $row['nb'],
+                    'frais'   => (float) $row['total_frais'],
+                    'nb'      => (int) $row['nb'],
                     'montant' => (float) $row['total_montant'],
                 ];
             } elseif ($code === 'transfert') {
                 $totalTransfert = [
-                    'frais' => (float) $row['total_frais'],
-                    'nb' => (int) $row['nb'],
+                    'frais'   => (float) $row['total_frais'],
+                    'nb'      => (int) $row['nb'],
                     'montant' => (float) $row['total_montant'],
                 ];
             }
@@ -109,7 +139,9 @@ class OperateurModel extends Model
         }
 
         $detailData = $this->getSituationDetail($dateMin, $dateMax, $operateur);
+        
         $labels = $dataFrais = $dataRetrait = $dataTransfert = [];
+
         if (!isset($detailData['error'])) {
             foreach ($detailData['detail'] as $jour) {
                 $labels[] = $jour['date'];
@@ -119,22 +151,27 @@ class OperateurModel extends Model
             }
         }
 
+        $montantInterOperateur = $this->getMontantInterOperateur($dateMin, $dateMax, $operateur);
+
         return [
-            'date_min' => $dateMin,
-            'date_max' => $dateMax,
-            'total_frais' => $totalFrais,
-            'total_montant' => $totalMontant,
+            'date_min'       => $dateMin,
+            'date_max'       => $dateMax,
+            'total_frais'    => $totalFrais,
+            'total_montant'  => $totalMontant,
             'total_transactions' => $totalTransactions,
-            'total_retrait' => $totalRetrait,
-            'total_transfert' => $totalTransfert,
-            'labels' => json_encode($labels),
-            'data_frais' => json_encode($dataFrais),
-            'data_retrait' => json_encode($dataRetrait),
+            'total_retrait'  => $totalRetrait,
+            'total_transfert'=> $totalTransfert,
+            'montant_inter_operateur' => $montantInterOperateur,
+            'labels'         => json_encode($labels),
+            'data_frais'     => json_encode($dataFrais),
+            'data_retrait'   => json_encode($dataRetrait),
             'data_transfert' => json_encode($dataTransfert),
-            'detail' => $detailData['detail'] ?? [],
-            'error' => $detailData['error'] ?? null,
+            'detail'         => $detailData['detail'] ?? [],
+            'error'          => $detailData['error'] ?? null,
+            'repartition_inter_operateur' => $this->getRepartitionInterOperateur($dateMin, $dateMax, $operateur),
         ];
     }
+
 
     protected $table = 't_operateur';
     protected $primaryKey = 'id';
@@ -265,4 +302,28 @@ class OperateurModel extends Model
 
         return true;
     }
+
+    public function getMontantInterOperateur($dateMin, $dateMax, $operateur = null)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t');
+    $builder->select('SUM(t.montant) as total_montant');
+    $builder->join('t_client source', 'source.id = t.id_client_source');
+    $builder->join('t_client cible', 'cible.id = t.id_client_cible', 'left');
+    $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+    $builder->where('toper.code', 'TRANSFERT');
+    $builder->where('t.date >=', $debut);
+    $builder->where('t.date <=', $fin);
+    $builder->where('source.id_operateur !=', 'cible.id_operateur', false); // opérateurs différents
+
+    if ($operateur) {
+        $builder->where('source.id_operateur', $operateur);
+    }
+
+    $result = $builder->get()->getRow();
+    return (float) ($result->total_montant ?? 0);
+}
+
 }
