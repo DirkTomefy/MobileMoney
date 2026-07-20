@@ -79,7 +79,7 @@ CREATE TABLE t_transaction (
 -- ============================================================
 
 -- 1. Opérateur (un seul : Orange)
-INSERT INTO t_operateur (id, libelle) VALUES (1, 'Orange');
+INSERT INTO t_operateur (id, libelle) VALUES (1, 'Airtek');
 
 -- 2. Préfixes (sans espaces)
 INSERT INTO t_prefix (id, id_operateur, libelle) VALUES
@@ -145,6 +145,195 @@ INSERT INTO t_transaction (id, id_client_source, id_client_cible, id_type_operat
 -- ============================================================
 -- Table des commissions entre opérateurs
 -- ============================================================
+
+-- ============================================================
+-- Ajout des autres opérateurs
+-- ============================================================
+
+INSERT INTO t_operateur (id, libelle) VALUES
+(2, 'Telma'),
+(3, 'Orange');
+
+
+-- ============================================================
+-- Ajout des préfixes
+-- ============================================================
+
+-- Telma
+INSERT INTO t_prefix (id, id_operateur, libelle) VALUES
+(3, 2, '034'),
+(4, 2, '+26134');
+
+-- Airtel
+INSERT INTO t_prefix (id, id_operateur, libelle) VALUES
+(5, 3, '032'),
+(6, 3, '+26132');
+
+
+-- ============================================================
+-- Tarifs Telma
+-- ============================================================
+
+-- DEPOT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(12,2,1,0,500,40),
+(13,2,1,501,2000,80),
+(14,2,1,2001,5000,120),
+(15,2,1,5001,999999,200);
+
+
+-- RETRAIT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(16,2,2,0,500,40),
+(17,2,2,501,2000,80),
+(18,2,2,2001,5000,120),
+(19,2,2,5001,999999,200);
+
+
+-- TRANSFERT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(20,2,3,0,1000,80),
+(21,2,3,1001,5000,150),
+(22,2,3,5001,10000,250),
+(23,2,3,10001,999999,400);
+
+
+
+-- ============================================================
+-- Tarifs Airtel
+-- ============================================================
+
+-- DEPOT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(24,3,1,0,500,30),
+(25,3,1,501,2000,70),
+(26,3,1,2001,5000,100),
+(27,3,1,5001,999999,180);
+
+
+-- RETRAIT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(28,3,2,0,500,30),
+(29,3,2,501,2000,70),
+(30,3,2,2001,5000,100),
+(31,3,2,5001,999999,180);
+
+
+-- TRANSFERT
+INSERT INTO t_tarif_operation
+(id, id_operateur, id_type_operation, min, max, prix)
+VALUES
+(32,3,3,0,1000,70),
+(33,3,3,1001,5000,120),
+(34,3,3,5001,10000,220),
+(35,3,3,10001,999999,350);
+
+
+
+-- ============================================================
+-- Historique des nouveaux tarifs
+-- ============================================================
+
+INSERT INTO t_historique_tarif
+(date_changement,id_tarif_operation,prix)
+SELECT
+NULL,
+id,
+prix
+FROM t_tarif_operation
+WHERE id >= 12;
+
+
+
+-- ============================================================
+-- Ajout des clients Telma
+-- ============================================================
+
+INSERT INTO t_client
+(id, nom, prenom, id_operateur, numero, date_creation)
+VALUES
+(6,'Rabe','Andry',2,'0341122334','2026-06-01 10:00:00'),
+(7,'Rakoto','Hery',2,'0345566778','2026-06-05 11:30:00'),
+(8,'Razafindrakoto','Mamy',2,'0349988776','2026-06-15 15:20:00');
+
+
+-- ============================================================
+-- Ajout des clients Airtel
+-- ============================================================
+
+INSERT INTO t_client
+(id, nom, prenom, id_operateur, numero, date_creation)
+VALUES
+(9,'Randria','Fara',3,'0321234567','2026-06-10 09:00:00'),
+(10,'Rasolof','Tiana',3,'0327654321','2026-06-18 14:00:00'),
+(11,'Rakotoarisoa','Solo',3,'0324445556','2026-06-22 16:45:00');
+
+
+
+-- ============================================================
+-- Transactions Telma
+-- ============================================================
+
+INSERT INTO t_transaction
+(id,id_client_source,id_client_cible,id_type_operation,date,montant,frais)
+VALUES
+
+-- Dépôt Telma
+(8,6,NULL,1,'2026-07-10 08:00:00',3000,120),
+
+-- Retrait Telma
+(9,7,NULL,2,'2026-07-15 10:00:00',1500,80),
+
+-- Transfert Telma
+(10,6,7,3,'2026-07-18 12:30:00',4000,150);
+
+
+
+-- ============================================================
+-- Transactions Airtel
+-- ============================================================
+
+INSERT INTO t_transaction
+(id,id_client_source,id_client_cible,id_type_operation,date,montant,frais)
+VALUES
+
+-- Dépôt Airtel
+(11,9,NULL,1,'2026-07-11 09:20:00',5000,100),
+
+-- Retrait Airtel
+(12,10,NULL,2,'2026-07-16 15:00:00',700,70),
+
+-- Transfert Airtel
+(13,9,11,3,'2026-07-19 17:30:00',8000,220);
+
+
+
+-- ============================================================
+-- Transfert inter-opérateur
+-- ============================================================
+
+INSERT INTO t_transaction
+(id,id_client_source,id_client_cible,id_type_operation,date,montant,frais)
+VALUES
+
+-- Orange vers Telma
+(14,1,6,3,'2026-07-20 08:30:00',10000,500),
+
+-- Telma vers Airtel
+(15,7,9,3,'2026-07-20 09:45:00',2500,150),
+
+-- Airtel vers Orange
+(16,11,3,3,'2026-07-20 10:15:00',3000,120);
 
 CREATE TABLE t_commission (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
