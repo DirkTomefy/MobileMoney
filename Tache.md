@@ -138,7 +138,7 @@
     -[] integration
 
 ## table + donne reel (10)
-[][Tsimbina]
+[X][Tsimbina]
 -t_commission
     -id
     -id_operateur_envoi
@@ -164,6 +164,7 @@
 (Alter table)
 -t_transaction
     -commision
+
 # Page
 
 -[][Tomefy] commision.php (15)

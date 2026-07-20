@@ -139,21 +139,160 @@ INSERT INTO t_transaction (id, id_client_source, id_client_cible, id_type_operat
     (1, 2, NULL, 1, '2026-07-19 09:00:00', 2000, 50),
 
     -- Dépôt de Luc (7000 → frais 100 selon tarif 3)
-    (2, 5, NULL, 1, '2026-07-13 13:10:00', 7000, 100),
-
-    -- Retrait de Pierre (1500 → frais 100 selon tarif 5)
-    (3, 3, NULL, 2, '2026-07-20 11:00:00', 1500, 100),
-
-    -- Retrait de Sophie (300 → frais 50 selon tarif 4)
-    (4, 4, NULL, 2, '2026-07-12 09:00:00', 300, 50),
-
-    -- Transfert de Jean à Marie (500 → frais 100 selon tarif 8)
-    (5, 1, 2, 3, '2026-07-20 10:00:00', 500, 100),
-
-    -- Transfert de Luc à Jean (6000 → frais 300 selon tarif 10)
-    (6, 5, 1, 3, '2026-07-17 16:00:00', 6000, 300),
-
-    -- Transfert de Marie à Sophie (2500 → frais 200 selon tarif 9)
-    (7, 2, 4, 3, '2026-07-14 17:20:00', 2500, 200);
+    (2, 5, NULL, 1, '2026-07-13 13:10:00', 7000, 100);
 
 -- Fin du script
+-- ============================================================
+-- Table des commissions entre opérateurs
+-- ============================================================
+
+CREATE TABLE t_commission (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    id_operateur_envoi INTEGER NOT NULL,
+    id_operateur_receveur INTEGER NOT NULL,
+
+    pourcentage REAL NOT NULL,
+
+    valable BOOLEAN DEFAULT 1,
+
+    FOREIGN KEY (id_operateur_envoi)
+        REFERENCES t_operateur(id),
+
+    FOREIGN KEY (id_operateur_receveur)
+        REFERENCES t_operateur(id),
+
+    -- éviter une double commission entre deux opérateurs
+    UNIQUE(id_operateur_envoi, id_operateur_receveur)
+);
+
+
+
+-- ============================================================
+-- Historique des commissions
+-- ============================================================
+
+CREATE TABLE t_historique_commission (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+
+    date_modif DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+    id_commission INTEGER NOT NULL,
+
+    pourcentage REAL NOT NULL,
+
+    FOREIGN KEY (id_commission)
+        REFERENCES t_commission(id)
+);
+
+
+
+-- ============================================================
+-- Ajout commission dans les transactions
+-- ============================================================
+
+ALTER TABLE t_transaction
+ADD COLUMN commission REAL DEFAULT 0;
+
+
+
+-- ============================================================
+-- Exemple de commissions entre opérateurs
+-- ============================================================
+
+-- Orange -> Telma : 30%
+-- Orange -> Airtel : 25%
+-- Telma -> Orange : 30%
+-- Telma -> Airtel : 20%
+-- Airtel -> Orange : 25%
+-- Airtel -> Telma : 20%
+
+INSERT INTO t_commission
+(id_operateur_envoi,id_operateur_receveur,pourcentage)
+VALUES
+
+(1,2,30),
+(1,3,25),
+
+(2,1,30),
+(2,3,20),
+
+(3,1,25),
+(3,2,20);
+
+
+
+-- ============================================================
+-- Historique initial des commissions
+-- ============================================================
+
+INSERT INTO t_historique_commission
+(id_commission,pourcentage)
+
+SELECT 
+id,
+pourcentage
+
+FROM t_commission;
+
+
+
+-- ============================================================
+-- Vue frais opérateur
+-- ============================================================
+
+CREATE VIEW v_frais_operateur AS
+
+SELECT
+
+    c.id_operateur_envoi,
+
+    c.id_operateur_receveur,
+
+    SUM(t.frais) AS frais,
+
+    t.date,
+
+    t.id_type_operation,
+
+    top.code AS type_operation_libelle,
+
+    SUM(
+        t.frais * c.pourcentage / 100
+    ) AS commission
+
+
+FROM t_transaction t
+
+
+JOIN t_client cl_source
+ON cl_source.id = t.id_client_source
+
+
+JOIN t_client cl_cible
+ON cl_cible.id = t.id_client_cible
+
+
+JOIN t_commission c
+ON c.id_operateur_envoi = cl_source.id_operateur
+AND c.id_operateur_receveur = cl_cible.id_operateur
+
+
+JOIN t_type_operation top
+ON top.id = t.id_type_operation
+
+
+WHERE c.valable = 1
+
+
+GROUP BY
+
+    c.id_operateur_envoi,
+
+    c.id_operateur_receveur,
+
+    t.date,
+
+    t.id_type_operation,
+
+    top.code;
