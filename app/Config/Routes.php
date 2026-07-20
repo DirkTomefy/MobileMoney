@@ -26,3 +26,8 @@ $routes->get('backoffice/tarif', 'TarifController::index');
 $routes->get('backoffice/tarif/getTarifs', 'TarifController::getTarifs');
 $routes->post('backoffice/tarif/update', 'TarifController::update');
 $routes->post('home/connectOperateur', 'HomeController::connectOperateur');
+
+$routes->group('client', function ($routes) {
+    $routes->get('solde', 'SoldeController::index');
+    $routes->get('solde/action/(:any)', 'SoldeController::action/$1');
+});
