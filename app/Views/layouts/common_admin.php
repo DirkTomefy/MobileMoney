@@ -27,12 +27,18 @@
             <a href="<?= base_url('backoffice/portefeuille') ?>" class="nav-link <?= (current_url() == base_url('backoffice/portefeuille')) ? 'active' : '' ?>">
                 <i class="bi bi-wallet2"></i> Portefeuille
             </a>
-            <a href="#" class="nav-link"><i class="bi bi-table"></i> Clients</a>
-            <a href="#" class="nav-link"><i class="bi bi-ui-checks"></i> Nouveau dossier</a>
             <div class="nav-section-label">Paramètres</div>
             <a href="<?= base_url('backoffice/tarif') ?>" class="nav-link <?= (current_url() == base_url('backoffice/tarif')) ? 'active' : '' ?>">
                 <i class="bi bi-coin"></i> Tarifs
             </a>
+            <a href="<?= base_url('backoffice/prefix') ?>" class="nav-link <?= (strpos(current_url(), base_url('backoffice/prefix')) !== false) ? 'active' : '' ?>">
+                <i class="bi bi-tags"></i> Préfixes
+            </a>
+
+            <a href="<?= base_url('backoffice/commission') ?>" class="nav-link <?= (strpos(current_url(), base_url('backoffice/commission')) !== false) ? 'active' : '' ?>">
+    <i class="bi bi-percent"></i> Commissions
+</a>
+
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
             <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </nav>

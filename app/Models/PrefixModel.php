@@ -52,4 +52,44 @@ class PrefixModel extends Model
 
         return null;
     }
+
+    public function getAllPrefixes()
+    {
+        return $this->orderBy('libelle', 'ASC')->findAll();
+    }
+
+    public function getPrefix($id)
+    {
+        return $this->find($id);
+    }
+
+    public function getPrefixesByOperateur($operateurId)
+    {
+        return $this->where('id_operateur', $operateurId)
+                    ->orderBy('libelle', 'ASC')
+                    ->findAll();
+    }
+
+    public function createPrefix($operateurId, $libelle)
+    {
+        return $this->insert([
+            'id_operateur' => $operateurId,
+            'libelle' => $libelle
+        ]);
+    }
+
+    public function updatePrefix($id, $libelle, $operateurId = null)
+    {
+        $data = ['libelle' => $libelle];
+        if ($operateurId !== null) {
+            $data['id_operateur'] = $operateurId;
+        }
+        return $this->update($id, $data);
+    }
+
+    public function deletePrefix($id)
+    {
+        return $this->delete($id);
+    }
+
 }
