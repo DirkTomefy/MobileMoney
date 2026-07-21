@@ -485,3 +485,20 @@ GROUP BY
     t.id_type_operation,
 
     top.code;
+
+
+
+CREATE TABLE t_promotion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_operateur INTEGER NOT NULL UNIQUE,
+    pourcentage REAL NOT NULL,
+    FOREIGN KEY (id_operateur) REFERENCES t_operateur(id)
+);
+
+
+
+INSERT INTO t_promotion
+(id_operateur,pourcentage)
+VALUES
+
+(1,30);
