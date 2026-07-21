@@ -98,6 +98,7 @@ class HomeController extends BaseController
 
         session()->set([
             'operateur_id' => $operateurId,
+            'operateur_name' => $operateur["libelle"],
             'operateur_connecte' => true,
             'connecte' => true 
         ]);

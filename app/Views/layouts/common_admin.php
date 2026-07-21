@@ -1,3 +1,8 @@
+<?php 
+$session = \Config\Services::session();
+$nom = $session->get('operateur_name');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -62,7 +67,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <div class="avatar-sm">AD</div>
                     <div class="d-none d-sm-block">
-                        <div class="fw-semibold small">Admin</div>
+                        <div class="fw-semibold small"><?=$nom?></div>
                         <div class="text-faint" style="font-size:.72rem;">Superviseur</div>
                     </div>
                     <i class="bi bi-chevron-down text-faint small"></i>
