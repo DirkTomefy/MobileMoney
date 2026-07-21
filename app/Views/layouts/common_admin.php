@@ -44,6 +44,9 @@ $nom = $session->get('operateur_name');
             <a href="<?= base_url('backoffice/commission') ?>" class="nav-link <?= (strpos(current_url(), base_url('backoffice/commission')) !== false) ? 'active' : '' ?>">
     <i class="bi bi-percent"></i> Commissions
 </a>
+        <a class="nav-link" href="<?= site_url('backoffice/alertes') ?>">
+    <i class="bi bi-exclamation-triangle-fill"></i> Alertes
+</a>
 
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
             <a href="/home/disconnect" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>

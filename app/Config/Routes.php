@@ -29,6 +29,7 @@ $routes->group('client', ['namespace' => 'App\Controllers'], function ($routes) 
     $routes->post('deposer/save', 'TransactionController::saveDeposer');
     $routes->post('retirer/save', 'TransactionController::saveRetirer');
     $routes->post('transferer/save', 'TransactionController::saveTransferer');
+
 });
 
 $routes->get('backoffice/portefeuille', 'PortefeuilleController::index');
@@ -72,6 +73,10 @@ $routes->group('backoffice', ['namespace' => 'App\Controllers'], function ($rout
     $routes->get('commission/edit/(:num)', 'CommissionController::edit/$1');
     $routes->post('commission/update/(:num)', 'CommissionController::update/$1');
     $routes->get('commission/delete/(:num)', 'CommissionController::delete/$1');
+
+    //! alertes
+    $routes->get('alertes', 'AlertesController::index');
+
 });
 
 $routes->get('client/info-numero', 'TransactionController::getInfoNumero');
