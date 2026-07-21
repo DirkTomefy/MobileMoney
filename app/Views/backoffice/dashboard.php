@@ -1,7 +1,6 @@
 <?php 
 $session = \Config\Services::session();
 $nom = $session->get('operateur_name');
-
 ?>
 
 <?= $this->extend('layouts/common_admin') ?>
@@ -34,7 +33,7 @@ $nom = $session->get('operateur_name');
     <div class="alert alert-warning"><?= esc($error) ?></div>
 <?php else: ?>
 
-<!-- 5 KPI -->
+<!-- 6 KPI -->
 <div class="row g-3 mb-4">
     <div class="col-6 col-xl-2">
         <div class="card-chic stat-card h-100">
@@ -53,7 +52,7 @@ $nom = $session->get('operateur_name');
                 <span class="stat-delta up"><i class="bi bi-arrow-up-right"></i> <?= number_format($total_transactions) ?></span>
             </div>
             <div class="stat-value"><?= number_format($montant_inter_operateur, 0, ',', ' ') ?> Ar</div>
-            <div class="text-muted-soft small mt-1">Montant inter-opérateur</div>
+            <div class="text-muted-soft small mt-1">Montant inter-opérateur (envoyé)</div>
         </div>
     </div>
     <div class="col-6 col-xl-2">
@@ -86,6 +85,16 @@ $nom = $session->get('operateur_name');
             <div class="text-muted-soft small mt-1">Volume total</div>
         </div>
     </div>
+    <div class="col-6 col-xl-2">
+        <div class="card-chic stat-card h-100" style="border-left-color: #17a2b8;">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <div class="stat-icon"><i class="bi bi-arrow-down-circle"></i></div>
+                <span class="stat-delta up"><i class="bi bi-arrow-up-right"></i> <?= number_format($total_recu_nb ?? 0) ?></span>
+            </div>
+            <div class="stat-value"><?= number_format($montant_recu_operateur ?? 0, 0, ',', ' ') ?> Ar</div>
+            <div class="text-muted-soft small mt-1">Montant reçu</div>
+        </div>
+    </div>
 </div>
 
 <!-- Graphique -->
@@ -105,41 +114,94 @@ $nom = $session->get('operateur_name');
     </div>
 </div>
 
-<!-- TABLEAU RÉPARTITION INTER-OPÉRATEUR -->
-<!-- TABLEAU RÉPARTITION INTER-OPÉRATEUR -->
+<!-- DEUX TABLEAUX CÔTE À CÔTE (même ligne) -->
 <div class="row g-3 mb-4">
-    <div class="col-12">
+    <!-- TABLEAU 1 : TRANSFERTS REÇUS -->
+    <div class="col-12 col-md-6">
         <div class="card-chic h-100">
             <div class="card-header-chic">
                 <div>
-                    <div class="fw-semibold">Répartition des transferts vers d'autres opérateurs</div>
-                    <div class="text-faint small">Montants, frais et commissions par opérateur destinataire</div>
+                    <div class="fw-semibold"><i class="bi bi-arrow-down-circle me-2" style="color:#17a2b8;"></i>Transferts reçus</div>
+                    <div class="text-faint small">depuis d'autres opérateurs</div>
                 </div>
+                <span class="badge-soft info">Total : <?= number_format($montant_recu_operateur ?? 0, 0, ',', ' ') ?> Ar</span>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-chic mb-0">
+                    <thead>
+                        <tr>
+                            <th>Opérateur source</th>
+                            <th class="text-end">Nb</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-end">Commission</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (empty($repartition_recu)): ?>
+                            <tr><td colspan="4" class="text-center text-muted-soft py-3">Aucun transfert reçu.</td></tr>
+                        <?php else: ?>
+                            <?php foreach ($repartition_recu as $row): ?>
+                                <tr>
+                                    <td><?= esc($row['operateur_source'] ?? 'N/A') ?></td>
+                                    <td class="text-end"><?= number_format($row['nb_transactions']) ?></td>
+                                    <td class="text-end font-mono"><?= number_format($row['total_montant'], 0, ',', ' ') ?></td>
+                                    <td class="text-end font-mono"><?= number_format($row['total_commission'] ?? 0, 0, ',', ' ') ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                            <tr class="fw-bold">
+                                <td>TOTAL</td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_recu, 'nb_transactions'))) ?></td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_recu, 'total_montant')), 0, ',', ' ') ?></td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_recu, 'total_commission')), 0, ',', ' ') ?></td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLEAU 2 : TRANSFERTS ENVOYÉS -->
+    <div class="col-12 col-md-6">
+        <div class="card-chic h-100">
+            <div class="card-header-chic">
+                <div>
+                    <div class="fw-semibold"><i class="bi bi-arrow-up-circle me-2" style="color:#dc3545;"></i>Transferts envoyés</div>
+                    <div class="text-faint small">vers d'autres opérateurs</div>
+                </div>
+                <span class="badge-soft danger">Total : <?= number_format($montant_inter_operateur ?? 0, 0, ',', ' ') ?> Ar</span>
             </div>
             <div class="table-responsive">
                 <table class="table table-chic mb-0">
                     <thead>
                         <tr>
                             <th>Opérateur destinataire</th>
-                            <th class="text-end">Nombre</th>
-                            <th class="text-end">Montant total (Ar)</th>
-                            <th class="text-end">Frais (Ar)</th>
-                            <th class="text-end">Commission (Ar)</th>
+                            <th class="text-end">Nb</th>
+                            <th class="text-end">Montant</th>
+                            <th class="text-end">Frais</th>
+                            <th class="text-end">Commission</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($repartition_inter_operateur)): ?>
-                            <tr><td colspan="5" class="text-center text-muted-soft py-3">Aucun transfert inter-opérateur sur cette période.</td></tr>
+                            <tr><td colspan="5" class="text-center text-muted-soft py-3">Aucun transfert envoyé.</td></tr>
                         <?php else: ?>
                             <?php foreach ($repartition_inter_operateur as $row): ?>
                                 <tr>
                                     <td><?= esc($row['operateur_receveur'] ?? 'N/A') ?></td>
                                     <td class="text-end"><?= number_format($row['nb_transactions']) ?></td>
                                     <td class="text-end font-mono"><?= number_format($row['total_montant'], 0, ',', ' ') ?></td>
-                                    <td class="text-end font-mono"><?= number_format($row['total_frais'], 0, ',', ' ') ?></td>
+                                    <td class="text-end font-mono"><?= number_format($row['total_frais'] ?? 0, 0, ',', ' ') ?></td>
                                     <td class="text-end font-mono"><?= number_format($row['total_commission'] ?? 0, 0, ',', ' ') ?></td>
                                 </tr>
                             <?php endforeach; ?>
+                            <tr class="fw-bold">
+                                <td>TOTAL</td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_inter_operateur, 'nb_transactions'))) ?></td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_inter_operateur, 'total_montant')), 0, ',', ' ') ?></td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_inter_operateur, 'total_frais')), 0, ',', ' ') ?></td>
+                                <td class="text-end"><?= number_format(array_sum(array_column($repartition_inter_operateur, 'total_commission')), 0, ',', ' ') ?></td>
+                            </tr>
                         <?php endif; ?>
                     </tbody>
                 </table>

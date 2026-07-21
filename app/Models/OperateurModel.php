@@ -24,6 +24,59 @@ class OperateurModel extends Model
     // SECTION DASHBOARD
     // ================================================================
 
+    public function getTotalRecuOperateur($dateMin, $dateMax, $operateurSource = null)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t');
+    $builder->select("COALESCE(SUM(t.montant), 0) as total_montant");
+    $builder->join('t_client source', 'source.id = t.id_client_source');
+    $builder->join('t_client cible', 'cible.id = t.id_client_cible', 'left');
+    $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+    $builder->where('toper.code', 'TRANSFERT');
+    $builder->where('t.date >=', $debut);
+    $builder->where('t.date <=', $fin);
+    $builder->where('source.id_operateur !=', 'cible.id_operateur', false);
+
+    if ($operateurSource) {
+        $builder->where('cible.id_operateur', $operateurSource);
+    }
+
+    $result = $builder->get()->getRow();
+    return (float) ($result->total_montant ?? 0);
+}
+
+public function getRepartitionRecuOperateur($dateMin, $dateMax, $operateurCible)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t');
+    $builder->select("
+        op_source.libelle as operateur_source,
+        COUNT(t.id) as nb_transactions,
+        SUM(t.montant) as total_montant,
+        SUM(t.frais) as total_frais,           -- AJOUTÉ
+        COALESCE(SUM(t.commission), 0) as total_commission
+    ");
+    $builder->join('t_client source', 'source.id = t.id_client_source');
+    $builder->join('t_client cible', 'cible.id = t.id_client_cible', 'left');
+    $builder->join('t_type_operation toper', 'toper.id = t.id_type_operation');
+    $builder->join('t_operateur op_source', 'op_source.id = source.id_operateur', 'left');
+    $builder->where('toper.code', 'TRANSFERT');
+    $builder->where('t.date >=', $debut);
+    $builder->where('t.date <=', $fin);
+    $builder->where('cible.id_operateur', $operateurCible);
+    $builder->where('source.id_operateur !=', 'cible.id_operateur', false);
+
+    $builder->groupBy('source.id_operateur, op_source.libelle');
+    $builder->orderBy('total_montant', 'DESC');
+
+    return $builder->get()->getResultArray();
+}
+
+
     public function getSituationGlobale($dateMin, $dateMax, $operateur)
     {
         $debut = $this->normalizeDate($dateMin, false);
@@ -200,6 +253,9 @@ class OperateurModel extends Model
             'detail'         => $detailData['detail'] ?? [],
             'error'          => $detailData['error'] ?? null,
             'repartition_inter_operateur' => $this->getRepartitionInterOperateur($dateMin, $dateMax, $operateur),
+            'repartition_recu'=> $this->getRepartitionRecuOperateur($dateMin, $dateMax, $operateur),
+            'montant_recu_operateur'=> $this->getTotalRecuOperateur($dateMin, $dateMax, $operateur),
+
         ];
     }
 
