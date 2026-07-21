@@ -145,7 +145,7 @@ class TransactionModel extends Model
     $frais = (float)$tarif['prix'];
     if($source["id_operateur"]==$cible["id_operateur"]){
         $pourcentage_reduc = $this ->tarifModel->getPromotion($source["id_operateur"]);
-        $frais -= $frais + $pourcentage_reduc / 100 ;
+        $frais -= ($pourcentage_reduc / 100) ;
     }
 
     // Commission (0 si même opérateur ou non définie)
