@@ -210,3 +210,7 @@
 
 -[] Page epargne
     ex 20% de atao anaty base
+
+
+$routes->post('client/eparge/ajouter', 'ClientController::epargner');
+$routes->get('client/eparge/index', 'ClientController::formEpargne');

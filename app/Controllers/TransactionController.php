@@ -4,17 +4,19 @@ namespace App\Controllers;
 
 use App\Models\TransactionModel;
 use App\Models\ClientModel;
+use App\Models\EpargneModel;
 use Exception;
 
 class TransactionController extends BaseController
 {
     protected TransactionModel $transactionModel;
     protected ClientModel $clientModel;
-
+  
     public function __construct()
     {
         $this->transactionModel = new TransactionModel();
         $this->clientModel = new ClientModel();
+       
     }
 
     private function checkSession()
@@ -33,11 +35,15 @@ class TransactionController extends BaseController
         if (!$idClient) return redirect()->to('/');
 
         $solde = $this->clientModel->getSolde($idClient);
+        $eparge=$this->clientModel->getEparge($idClient);
+
         $client = $this->clientModel->find($idClient);
 
         return view('client/transaction', [
             'solde'  => $solde,
             'client' => $client,
+            'epargne' => $eparge,
+            'en_compte'=>$solde-$eparge,
         ]);
     }
 

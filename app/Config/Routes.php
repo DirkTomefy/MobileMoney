@@ -79,3 +79,5 @@ $routes->get('client/get-frais-transfert', 'TransactionController::getFraisTrans
 
 
 $routes->post('client/eparge/ajouter', 'ClientController::epargner');
+$routes->get('client/eparge/index', 'ClientController::formEpargne');
+

@@ -30,6 +30,8 @@
             <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-plus-circle"></i> Dépôt</a>
             <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-dash-circle"></i> Retrait</a>
             <a href="<?= base_url('client/transaction') ?>" class="nav-link"><i class="bi bi-arrow-left-right"></i> Transfert</a>
+            <a href="<?= base_url('client/eparge/index') ?>" class="nav-link"><i class="bi bi-arrow-left-right"></i> changer epargne</a>
+
             <div class="nav-section-label">Compte</div>
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
             <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>

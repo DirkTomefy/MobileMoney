@@ -171,8 +171,12 @@
         <!-- Solde -->
         <div class="solde-section">
             <div>
-                <div class="solde-label">Solde disponible</div>
+                <div class="solde-label">Solde total</div>
                 <div class="solde-amount"><?= number_format($solde ?? 0, 0, ',', ' ') ?> Ar</div>
+                <div class="solde-label">Solde disponible</div>
+                <div class="solde-amount"><?= number_format($en_compte ?? 0, 0, ',', ' ') ?> Ar</div>
+                <div class="solde-label">Solde Epargne</div>
+                <div class="solde-amount"><?= number_format($epargne ?? 0, 0, ',', ' ') ?> Ar</div>
             </div>
             <i class="bi bi-wallet2" style="font-size:2rem;color:var(--color-accent);opacity:0.3;"></i>
         </div>
