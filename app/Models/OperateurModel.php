@@ -327,4 +327,53 @@ class OperateurModel extends Model
         }
         return array_values($dates);
     }
+
+public function getAlertesTransferts($dateMin, $dateMax, $operateur, $seuil = 1000000)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    return $this->db->table('t_transaction t')
+        ->select('t.id, t.date, t.montant, t.frais, t.commission, source.numero as source, cible.numero as cible, op_source.libelle as operateur_source, op_cible.libelle as operateur_cible')
+        ->join('t_client source', 'source.id = t.id_client_source')
+        ->join('t_client cible', 'cible.id = t.id_client_cible', 'left')
+        ->join('t_type_operation toper', 'toper.id = t.id_type_operation')
+        ->join('t_operateur op_source', 'op_source.id = source.id_operateur', 'left')
+        ->join('t_operateur op_cible', 'op_cible.id = cible.id_operateur', 'left')
+        ->where('toper.code', 'TRANSFERT')
+        ->where('t.date >=', $debut)
+        ->where('t.date <=', $fin)
+        ->where('source.id_operateur', $operateur)
+        ->where('t.montant >=', $seuil)
+        ->orderBy('t.date', 'DESC')
+        ->get()
+        ->getResultArray();
+}
+
+public function getStatsAlertes($dateMin, $dateMax, $operateur, $seuil = 1000000)
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t')
+        ->select("
+            DATE(t.date) as jour,
+            COUNT(t.id) as nb,
+            SUM(t.montant) as total_montant,
+            AVG(t.montant) as moyenne
+        ")
+        ->join('t_client source', 'source.id = t.id_client_source')
+        ->join('t_type_operation toper', 'toper.id = t.id_type_operation')
+        ->where('toper.code', 'TRANSFERT')
+        ->where('t.date >=', $debut)
+        ->where('t.date <=', $fin)
+        ->where('source.id_operateur', $operateur)
+        ->where('t.montant >=', $seuil)
+        ->groupBy('DATE(t.date)')
+        ->orderBy('jour', 'ASC');
+
+    return $builder->get()->getResultArray();
+}
+
+
 }
