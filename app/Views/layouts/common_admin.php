@@ -26,6 +26,7 @@ $nom = $session->get('operateur_name');
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section-label">Général</div>
+           
             <a href="<?= base_url('backoffice/dashboard') ?>" class="nav-link <?= (current_url() == base_url('backoffice/dashboard')) ? 'active' : '' ?>">
                 <i class="bi bi-grid-1x2"></i> Tableau de bord
             </a>
@@ -45,7 +46,7 @@ $nom = $session->get('operateur_name');
 </a>
 
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
-            <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+            <a href="/home/disconnect" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </nav>
         <div class="sidebar-foot">
             © 2026 Mobile Money — v2.4

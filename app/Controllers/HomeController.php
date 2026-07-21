@@ -42,8 +42,8 @@ class HomeController extends BaseController
         if ($client) {
             session()->set([
                 'client_id' => $client['id'],
-                'numero'    => $client['numero'],
-                'connecte'  => true
+                'numero' => $client['numero'],
+                'connecte' => true
             ]);
             return redirect()->to('/client/home');
         }
@@ -61,10 +61,10 @@ class HomeController extends BaseController
         }
 
         $data = [
-            'numero'        => $numero,
-            'id_operateur'  => $operateur['id'],
-            'nom'           => null,
-            'prenom'        => null,
+            'numero' => $numero,
+            'id_operateur' => $operateur['id'],
+            'nom' => null,
+            'prenom' => null,
             'date_creation' => date('Y-m-d H:i:s')
         ];
 
@@ -76,8 +76,8 @@ class HomeController extends BaseController
 
         session()->set([
             'client_id' => $clientId,
-            'numero'    => $numero,
-            'connecte'  => true
+            'numero' => $numero,
+            'connecte' => true
         ]);
 
         return redirect()->to('/client/home');
@@ -100,9 +100,23 @@ class HomeController extends BaseController
             'operateur_id' => $operateurId,
             'operateur_name' => $operateur["libelle"],
             'operateur_connecte' => true,
-            'connecte' => true 
+            'connecte' => true
         ]);
 
         return redirect()->to('/backoffice/dashboard');
     }
+
+    public function disconnect()
+    {
+        session()->remove([
+            'operateur_id',
+            'operateur_name',
+            'operateur_connecte',
+            'connecte',
+            'client_id',
+            'numero'
+        ]);
+        return redirect()->to('/');
+    }
+
 }
