@@ -1,1 +1,1 @@
-__ci_last_regenerate|i:1784619198;_ci_previous_url|s:50:"http://localhost:8080/index.php/client/transaction";client_id|i:14;numero|s:10:"0320000000";connecte|b:1;
+__ci_last_regenerate|i:1784619198;_ci_previous_url|s:50:"http://localhost:8080/index.php/client/transaction";client_id|i:14;numero|s:10:"0320000000";connecte|b:1;success|s:35:"Transferts effectués avec succès.";__ci_vars|a:1:{s:7:"success";s:3:"old";}
