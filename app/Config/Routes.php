@@ -12,6 +12,8 @@ use CodeIgniter\Router\RouteCollection;
 $routes->get('/', 'HomeController::index');
 $routes->post('home/connect', 'HomeController::connect');
 $routes->post('home/connectOperateur', 'HomeController::connectOperateur');
+$routes->get('home/disconnect', 'HomeController::disconnect');
+
 
 // ==========================================
 // Routes frontoffice (client connecté)

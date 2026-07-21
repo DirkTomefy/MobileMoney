@@ -8,6 +8,12 @@ class OperateurModel extends Model
 {
     protected $db;
 
+    protected $table = 't_operateur';
+    protected $primaryKey = 'id';
+    protected $allowedFields = ['libelle'];
+    
+
+
     public function __construct()
     {
         parent::__construct();
@@ -201,9 +207,7 @@ class OperateurModel extends Model
     // SECTION OPÉRATEURS
     // ================================================================
 
-    protected $table = 't_operateur';
-    protected $primaryKey = 'id';
-    protected $allowedFields = ['libelle'];
+   
 
     public function getAllOperateurs()
     {

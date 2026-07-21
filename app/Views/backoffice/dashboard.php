@@ -1,10 +1,16 @@
+<?php 
+$session = \Config\Services::session();
+$nom = $session->get('operateur_name');
+
+?>
+
 <?= $this->extend('layouts/common_admin') ?>
 <?= $this->section('content') ?>
 
 <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-2">
     <div>
         <div class="eyebrow mb-1">Vue d'ensemble</div>
-        <h1 class="h3 font-display mb-0">Bonjour, Admin</h1>
+        <h1 class="h3 font-display mb-0">Bonjour, <?= $nom ?></h1>
         <p class="text-muted-soft mb-0">
             Synthèse des opérations du <?= date('d/m/Y', strtotime($date_min)) ?> au <?= date('d/m/Y', strtotime($date_max)) ?>.
         </p>

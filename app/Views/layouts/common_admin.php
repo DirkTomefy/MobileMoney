@@ -1,3 +1,8 @@
+<?php 
+$session = \Config\Services::session();
+$nom = $session->get('operateur_name');
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -21,6 +26,7 @@
         </div>
         <nav class="sidebar-nav">
             <div class="nav-section-label">Général</div>
+           
             <a href="<?= base_url('backoffice/dashboard') ?>" class="nav-link <?= (current_url() == base_url('backoffice/dashboard')) ? 'active' : '' ?>">
                 <i class="bi bi-grid-1x2"></i> Tableau de bord
             </a>
@@ -40,7 +46,7 @@
 </a>
 
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
-            <a href="#" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
+            <a href="/home/disconnect" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </nav>
         <div class="sidebar-foot">
             © 2026 Mobile Money — v2.4
@@ -62,7 +68,7 @@
                 <div class="d-flex align-items-center gap-2">
                     <div class="avatar-sm">AD</div>
                     <div class="d-none d-sm-block">
-                        <div class="fw-semibold small">Admin</div>
+                        <div class="fw-semibold small"><?=$nom?></div>
                         <div class="text-faint" style="font-size:.72rem;">Superviseur</div>
                     </div>
                     <i class="bi bi-chevron-down text-faint small"></i>
