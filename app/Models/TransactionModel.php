@@ -143,8 +143,8 @@ class TransactionModel extends Model
     $tarif = $this->tarifModel->getTarif($source['id_operateur'], $operation['id'], $montant);
     if (!$tarif) throw new Exception("Tarif transfert introuvable.");
     $frais = (float)$tarif['prix'];
-    if($source["id_operateur"]==$cible["id_operateur"]){
-        $pourcentage_reduc = $this ->tarifModel->getPromotion($source["id_operateur"]);
+    if($source['id_operateur'] == $cible['id_operateur']){
+        $pourcentage_reduc = $this ->tarifModel->getPromotion($source['id_operateur']);
         $frais -= $frais * ($pourcentage_reduc / 100) ;
     }
 

@@ -44,6 +44,7 @@ class TarifOperationModel extends Model
             pourcentage 
         ");
 
+        //! cette fonction à une erreur: peut être quelle ne retourne pas la première ligne
         $builder->where('t.id_operateur', $id_operateur);
         $result = $builder->get()->getRow();
         return $result;
