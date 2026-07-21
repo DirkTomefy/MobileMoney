@@ -45,6 +45,10 @@ $nom = $session->get('operateur_name');
     <i class="bi bi-percent"></i> Commissions
 </a>
 
+ <a href="<?= base_url('backoffice/topclients') ?>" class="nav-link <?= (strpos(current_url(), base_url('backoffice/commission')) !== false) ? 'active' : '' ?>">
+        <i class="bi bi-trophy-fill"></i> Top clients
+</a>
+
             <a href="#" class="nav-link"><i class="bi bi-gear"></i> Paramètres</a>
             <a href="/home/disconnect" class="nav-link"><i class="bi bi-box-arrow-right"></i> Déconnexion</a>
         </nav>

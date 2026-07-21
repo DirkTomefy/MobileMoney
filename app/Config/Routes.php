@@ -72,6 +72,7 @@ $routes->group('backoffice', ['namespace' => 'App\Controllers'], function ($rout
     $routes->get('commission/edit/(:num)', 'CommissionController::edit/$1');
     $routes->post('commission/update/(:num)', 'CommissionController::update/$1');
     $routes->get('commission/delete/(:num)', 'CommissionController::delete/$1');
+    $routes->get('topclients', 'StatsClientController::topClients');
 });
 
 $routes->get('client/info-numero', 'TransactionController::getInfoNumero');

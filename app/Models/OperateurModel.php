@@ -327,4 +327,38 @@ class OperateurModel extends Model
         }
         return array_values($dates);
     }
+
+    /**
+ * Récupère le top N des clients par montant total de transactions (ou par nombre)
+ */
+public function getTopClients($dateMin, $dateMax, $operateur, $limit = 10, $orderBy = 'montant')
+{
+    $debut = $this->normalizeDate($dateMin, false);
+    $fin   = $this->normalizeDate($dateMax, true);
+
+    $builder = $this->db->table('t_transaction t')
+        ->select("
+            c.id,
+            c.nom,
+            c.prenom,
+            c.numero,
+            COUNT(t.id) as nb_transactions,
+            SUM(t.montant) as total_montant,
+            SUM(t.frais) as total_frais
+        ")
+        ->join('t_client c', 'c.id = t.id_client_source')
+        ->where('c.id_operateur', $operateur)
+        ->where('t.date >=', $debut)
+        ->where('t.date <=', $fin)
+        ->groupBy('c.id, c.nom, c.prenom, c.numero');
+
+    if ($orderBy === 'montant') {
+        $builder->orderBy('total_montant', 'DESC');
+    } else {
+        $builder->orderBy('nb_transactions', 'DESC');
+    }
+
+    return $builder->limit($limit)->get()->getResultArray();
+    }
+
 }

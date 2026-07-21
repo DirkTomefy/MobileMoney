@@ -13,3 +13,45 @@ in APPPATH/Views/backoffice/dashboard.php on line 7.
 10 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
 11 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
 12 SYSTEMPATH/rewrite.php(44): require_once('/home/tomefy/Documents/SI/MobileMoney/public/index.php')
+CRITICAL - 2026-07-21 06:57:57 --> ErrorException: Undefined variable $activeSection
+[Method: GET, Route: backoffice/prefix]
+in APPPATH/Views/layouts/common_admin.php on line 47.
+ 1 APPPATH/Views/layouts/common_admin.php(47): CodeIgniter\Debug\Exceptions->errorHandler()
+ 2 SYSTEMPATH/View/View.php(240): include('/home/tomefy/Documents/SI/MobileMoney/app/Views/layouts/common_admin.php')
+ 3 SYSTEMPATH/View/View.php(243): CodeIgniter\View\View->{closure:CodeIgniter\View\View::render():237}()
+ 4 SYSTEMPATH/View/View.php(256): CodeIgniter\View\View->render()
+ 5 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 6 APPPATH/Controllers/PrefixController.php(26): view()
+ 7 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\PrefixController->index()
+ 8 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 9 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+10 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+11 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+12 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+13 SYSTEMPATH/rewrite.php(44): require_once('/home/tomefy/Documents/SI/MobileMoney/public/index.php')
+CRITICAL - 2026-07-21 07:00:20 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "backoffice/top_clients.php"
+[Method: GET, Route: backoffice/topclients]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 39.
+ 1 SYSTEMPATH/View/View.php(228): CodeIgniter\Exceptions\FrameworkException::forInvalidFile()
+ 2 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 3 APPPATH/Controllers/StatsClientController.php(32): view()
+ 4 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\StatsClientController->topClients()
+ 5 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 6 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 7 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 9 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+10 SYSTEMPATH/rewrite.php(44): require_once('/home/tomefy/Documents/SI/MobileMoney/public/index.php')
+CRITICAL - 2026-07-21 07:00:30 --> CodeIgniter\View\Exceptions\ViewException: Invalid file: "backoffice/top_clients.php"
+[Method: GET, Route: backoffice/topclients]
+in SYSTEMPATH/Exceptions/FrameworkException.php on line 39.
+ 1 SYSTEMPATH/View/View.php(228): CodeIgniter\Exceptions\FrameworkException::forInvalidFile()
+ 2 SYSTEMPATH/Common.php(1250): CodeIgniter\View\View->render()
+ 3 APPPATH/Controllers/StatsClientController.php(32): view()
+ 4 SYSTEMPATH/CodeIgniter.php(951): App\Controllers\StatsClientController->topClients()
+ 5 SYSTEMPATH/CodeIgniter.php(497): CodeIgniter\CodeIgniter->runController()
+ 6 SYSTEMPATH/CodeIgniter.php(340): CodeIgniter\CodeIgniter->handleRequest()
+ 7 SYSTEMPATH/Boot.php(417): CodeIgniter\CodeIgniter->run()
+ 8 SYSTEMPATH/Boot.php(68): CodeIgniter\Boot::runCodeIgniter()
+ 9 FCPATH/index.php(59): CodeIgniter\Boot::bootWeb()
+10 SYSTEMPATH/rewrite.php(44): require_once('/home/tomefy/Documents/SI/MobileMoney/public/index.php')
