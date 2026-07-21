@@ -197,3 +197,16 @@
     -[] function
         -[] getFraisRetrait
         -[] transfererMultiple
+
+
+
+# 3911 
+-[X] table epargne 
+    -id 
+    -id client
+    -pourcentage
+
+() pour chaque tansfers
+
+-[] Page epargne
+    ex 20% de atao anaty base

@@ -485,3 +485,11 @@ GROUP BY
     t.id_type_operation,
 
     top.code;
+
+
+CREATE TABLE t_epargne (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_client INTEGER NOT NULL,
+    frais REAL NOT NULL,
+    FOREIGN KEY (id_client) REFERENCES t_client(id)
+);

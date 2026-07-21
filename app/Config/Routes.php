@@ -75,3 +75,7 @@ $routes->group('backoffice', ['namespace' => 'App\Controllers'], function ($rout
 $routes->get('client/info-numero', 'TransactionController::getInfoNumero');
 $routes->get('client/get-commission', 'TransactionController::getCommission');
 $routes->get('client/get-frais-transfert', 'TransactionController::getFraisTransfert');
+
+
+
+$routes->post('client/eparge/ajouter', 'ClientController::epargner');
