@@ -487,7 +487,7 @@ GROUP BY
     top.code;
 
 
-
+---! 3948 aléa 
 CREATE TABLE t_promotion (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     id_operateur INTEGER NOT NULL UNIQUE,

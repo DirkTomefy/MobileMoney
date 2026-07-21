@@ -32,4 +32,20 @@ class TarifOperationModel extends Model
                     ->where('max >=', $montant)
                     ->first();
     }
+
+    public function getPromotion(
+        $id_operateur
+    ){
+        
+
+        $builder = $this->db->table('t_promotion t');
+        $builder->select("
+            id_operateur ,
+            pourcentage 
+        ");
+
+        $builder->where('t.id_operateur', $id_operateur);
+        $result = $builder->get()->getRow();
+        return $result;
+    }
 }

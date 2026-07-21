@@ -127,9 +127,10 @@ class TransactionModel extends Model
     bool $addFees = true
 ) {
     $date = $date ?? date('Y-m-d H:i:s');
-
-    $source = $this->clientModel->find($id_client_source);
+    $source= $this->clientModel->find($id_client_source);
     $cible  = $this->clientModel->find($id_client_cible);
+
+  
 
     if (!$source) throw new Exception("Client source introuvable.");
     if (!$cible)  throw new Exception("Client destinataire introuvable.");
@@ -142,6 +143,10 @@ class TransactionModel extends Model
     $tarif = $this->tarifModel->getTarif($source['id_operateur'], $operation['id'], $montant);
     if (!$tarif) throw new Exception("Tarif transfert introuvable.");
     $frais = (float)$tarif['prix'];
+    if($source["id_operateur"]==$cible["id_operateur"]){
+        $pourcentage_reduc = $this ->tarifModel->getPromotion($source["id_operateur"]);
+        $frais -= $frais + $pourcentage_reduc / 100 ;
+    }
 
     // Commission (0 si même opérateur ou non définie)
     $commissionModel = new CommissionModel();
